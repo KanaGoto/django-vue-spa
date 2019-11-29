@@ -7,6 +7,7 @@ import test1 from "./components/Test1.vue";
 import test2 from "./components/Test2.vue";
 
 import Login from "@/views/Login.vue";
+import MyPageView from "@/views/MyPage.vue";
 import ProductList from "@/views/ProductList.vue";
 import Product from "@/views/Product.vue";
 import ProductHome from "@/views/ProductReview.vue";
@@ -53,19 +54,9 @@ const router = new Router({
       component: () => import("./views/Join.vue")
     },
     {
-      path: "/test",
-      name: "test",
-      component: test
-    },
-    {
-      path: "/test1",
-      name: "test1",
-      component: test1
-    },
-    {
-      path: "/test2",
-      name: "test2",
-      component: test2
+      path: "/mypage",
+      name: "my-page-view",
+      component: MyPageView
     },
     {
       path: "/product",
@@ -95,6 +86,22 @@ const router = new Router({
           component: ReviewDetail
         }
       ]
+    },
+    /* 以下テスト用 */
+    {
+      path: "/test",
+      name: "test",
+      component: test
+    },
+    {
+      path: "/test1",
+      name: "test1",
+      component: test1
+    },
+    {
+      path: "/test2",
+      name: "test2",
+      component: test2
     }
   ]
 });

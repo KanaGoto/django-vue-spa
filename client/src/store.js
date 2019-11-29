@@ -6,7 +6,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    isLoggedIn: false, //ログイン状態
+    isLoggedIn: false, //ログイン状態,
+    products: null,
     hedgehogs: [],
     user: null,
     isAuthenticated: false,
@@ -23,6 +24,9 @@ export default new Vuex.Store({
       state.isLoggedIn = false;
       delete client.defaults.headers.common["Authorization"];
       localStorage.clear();
+    },
+    setProducts(state, payload) {
+      state.products = payload;
     },
     setHedgehogs(state, payload) {
       state.hedgehogs = payload;
@@ -73,17 +77,35 @@ export default new Vuex.Store({
         );
       }
     },
-    async getHedgehogs({ state, commit }, color) {
-      try {
-        // eslint-disable-next-line
-        let response = await axios.get(
-          `${state.apiUrl}hedgehogs/?color=` + color
-        );
-        commit("setHedgehogs", response.data);
-      } catch (error) {
-        commit("setHedgehogs", []);
-      }
+    getProducts({ commit }, pageNo) {
+      return (
+        client.products
+          .findAll(pageNo)
+          .then(res => {
+            alert("成功");
+            // eslint-disable-next-line
+            console.log(res.data);
+            commit("setProducts", res.data);
+            return res.data;
+          })
+          // eslint-disable-next-line
+        .catch(e => {
+            commit("setProducts", []);
+            alert("プロダクト取得失敗");
+          })
+      );
     }
+    // async getProducts({ state, commit }, color) {
+    //   try {
+    //     // eslint-disable-next-line
+    //     let response = await axios.get(
+    //       `${state.apiUrl}hedgehogs/?color=` + color
+    //     );
+    //     commit("setHedgehogs", response.data);
+    //   } catch (error) {
+    //     commit("setHedgehogs", []);
+    //   }
+    // }
     // userLogin({ commit }, { email, password }) {
     //   firebase
     //     .auth()
@@ -154,6 +176,10 @@ export default new Vuex.Store({
     },
     getMessage(state) {
       return state.message;
+    },
+    products: state => state.products,
+    product(state, id) {
+      state.products.find(el => el.id === id);
     }
   }
 });

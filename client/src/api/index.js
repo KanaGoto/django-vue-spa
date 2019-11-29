@@ -2,19 +2,18 @@ import axios from "axios";
 
 import auth from "./auth";
 import questions from "./questions";
-//toDo
-//import products from "./products";
+import products from "./products";
 //import product from "./product";
 
 const client = axios.create({
-  baseURL: "http://localhost:8000/api/"
+  baseURL: "http://localhost:8000/"
 });
 
 /* apiを全て読み込む */
 client.auth = auth(client);
 client.questions = questions(client);
 //toDo
-//client.products = products(client);
+client.products = products(client);
 //client.product = product(client);
 
 // client.install = function(Vue) {

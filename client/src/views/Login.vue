@@ -54,7 +54,7 @@ export default {
         res => {
           if(this.isLoggedIn === true){
             alert("ok");
-            this.$router.push("/product");
+            this.$router.push("/mypage");
           }
         },
         err => {
