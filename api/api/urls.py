@@ -21,11 +21,13 @@ from rest_framework.routers import DefaultRouter
 from goods.views import GoodsListViewSet
 import xadmin
 from goods.views import CategoryViewSet
+from user_operation.views import ReviewsListViewSet
 from rest_framework_jwt.views import obtain_jwt_token # 追加
 
 router = DefaultRouter()
 router.register(r'goods', GoodsListViewSet)
 router.register(r'categorys', CategoryViewSet, base_name="categorys")
+router.register(r'reviews', ReviewsListViewSet, base_name="reviews")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
