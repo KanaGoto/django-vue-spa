@@ -10,8 +10,6 @@ import Login from "@/views/Login.vue";
 import MyPageView from "@/views/MyPage.vue";
 import ProductList from "@/views/ProductList.vue";
 import Product from "@/views/Product.vue";
-import ProductHome from "@/views/ProductReview.vue";
-import ProductReview from "@/views/ProductReview.vue";
 import ReviewDetail from "@/views/ReviewDetail.vue";
 
 Vue.use(Router);
@@ -27,8 +25,31 @@ const router = new Router({
     },
     {
       path: "/login",
-      name: "Login",
+      name: "login",
       component: Login
+    },
+    {
+      path: "/mypage",
+      name: "my-page-view",
+      component: MyPageView
+    },
+    {
+      path: "/products",
+      name: "product-list",
+      component: ProductList
+    },
+    {
+      path: "/product/:id",
+      name: "product",
+      component: Product,
+      props: route => ({ id: Number(route.params.id) }),
+      children: [
+        {
+          name: "review-detail",
+          path: "review/:rid", //親ルートと被らないパラメータを指定
+          component: ReviewDetail
+        }
+      ]
     },
     {
       path: "/about",
@@ -52,40 +73,6 @@ const router = new Router({
       path: "/join",
       name: "join",
       component: () => import("./views/Join.vue")
-    },
-    {
-      path: "/mypage",
-      name: "my-page-view",
-      component: MyPageView
-    },
-    {
-      path: "/product",
-      name: ProductList,
-      component: ProductList
-    },
-    {
-      path: "/product/:id",
-      name: Product,
-      component: Product,
-      //props: true
-      props: route => ({ id: Number(route.params.id) }),
-      children: [
-        {
-          name: "product-home",
-          path: "",
-          component: ProductHome
-        },
-        {
-          name: "product-review",
-          path: "review",
-          component: ProductReview
-        },
-        {
-          name: "review-detail",
-          path: "review/:rid", //親ルートと被らないパラメータを指定
-          component: ReviewDetail
-        }
-      ]
     },
     /* 以下テスト用 */
     {

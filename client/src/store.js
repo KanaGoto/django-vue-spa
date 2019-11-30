@@ -50,7 +50,6 @@ export default new Vuex.Store({
         client.auth
           .login(username, password)
           .then(res => {
-            alert("成功");
             commit("loggedIn", res.data.token);
             return res;
           })
@@ -82,7 +81,6 @@ export default new Vuex.Store({
         client.products
           .findAll(pageNo)
           .then(res => {
-            alert("成功");
             // eslint-disable-next-line
             console.log(res.data);
             commit("setProducts", res.data);

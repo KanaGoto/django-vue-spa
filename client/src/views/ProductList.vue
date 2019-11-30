@@ -2,14 +2,13 @@
   <div class="product-list">
     <h1>商品リスト</h1>
     <ul>
-      <li v-for="{ id, name } in products" :key="id">
-        <router-link :to="'/product/${id}'">{{ name }}</router-link>
+      <li v-for="{ id, name } in initData.results" :key="id">
+        <router-link v-bind:to="{ name: 'product', params: { id: id } }">{{
+          name
+        }}</router-link>
       </li>
     </ul>
-    <nav>
-      <router-link to="/list" tag="button">list</router-link><br />
-      <router-link to="/detail">detail</router-link>
-    </nav>
+    <nav><router-link to="/list" tag="button">list</router-link><br /></nav>
     <router-view />
   </div>
 </template>
@@ -23,6 +22,10 @@ export default {
       products: []
     };
   },
+  created() {
+    // eslint-disable-next-line
+    this.$store.dispatch("getProducts", 1);
+  },
   computed: {
     initData() {
       return this.$store.getters.products;
@@ -31,20 +34,6 @@ export default {
       return this.$store.getters.isLoggedIn;
     }
   },
-  methods: {
-    getProduct() {
-      this.$store.dispatch("getProducts", 1);
-      //console.log(this.$store.getters.products);
-      this.products = this.productsData.results;
-      this.previousUrl = this.productsData.previous;
-      this.nextUrl = this.productsData.next;
-    }
-  },
-  created() {
-    this.$store.dispatch("getProducts", 1);
-    this.products = this.$store.getters.products.results;
-    this.previousUrl = this.$store.getters.products.previous;
-    this.nextUrl = this.$store.getters.products.next;
-  }
+  methods: {}
 };
 </script>

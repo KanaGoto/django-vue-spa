@@ -1,6 +1,6 @@
 import xadmin
 from xadmin import views
-from .models import VerifyCode
+from .models import VerifyCode, UserProfile
 
 
 class BaseSetting(object):
@@ -15,7 +15,6 @@ class GlobalSettings(object):
 
 class VerifyCodeAdmin(object):
     list_display = ['code', 'mobile', "add_time"]
-
 
 xadmin.site.register(VerifyCode, VerifyCodeAdmin)
 xadmin.site.register(views.BaseAdminView, BaseSetting)
