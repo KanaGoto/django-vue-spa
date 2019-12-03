@@ -7,10 +7,10 @@ import test1 from "./components/Test1.vue";
 import test2 from "./components/Test2.vue";
 
 import Login from "@/views/Login.vue";
-import MyPageView from "@/views/MyPage.vue";
+import MyPage from "@/views/MyPage.vue";
 import ProductList from "@/views/ProductList.vue";
 import Product from "@/views/Product.vue";
-import ReviewDetail from "@/views/ReviewDetail.vue";
+import ReviewCreate from "@/views/ReviewCreate.vue";
 
 Vue.use(Router);
 
@@ -31,7 +31,7 @@ const router = new Router({
     {
       path: "/mypage",
       name: "my-page-view",
-      component: MyPageView
+      component: MyPage
     },
     {
       path: "/products",
@@ -45,9 +45,10 @@ const router = new Router({
       props: route => ({ id: Number(route.params.id) }),
       children: [
         {
-          name: "review-detail",
-          path: "review/:rid", //親ルートと被らないパラメータを指定
-          component: ReviewDetail
+          path: "/review", //親ルートと被らないパラメータを指定
+          name: "reviews-create",
+          props: route => ({ id: Number(route.params.id) }),
+          component: ReviewCreate
         }
       ]
     },

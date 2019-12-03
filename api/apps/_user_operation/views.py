@@ -15,7 +15,7 @@ class ReviewsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
-class ReviewsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ReviewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
      queryset = Reviews.objects.all()
      serializer_class = ReviewsSerializer
      """ページング"""

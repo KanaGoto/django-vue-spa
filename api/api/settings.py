@@ -58,6 +58,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
+        #'rest_framework.permissions.IsAuthenticated', #削除　常にtoken見るため
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.AutoSchema',
@@ -66,10 +67,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'NON_FIELD_ERRORS_KEY': 'detail', #追加
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',#追加
 }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # 追加
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -152,7 +155,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = "users.UserProfile"
+AUTH_USER_MODEL = "users.Account"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -161,6 +164,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 JWT_AUTH = {
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
+    'JWT_AUTH_HEADER_PREFIX': 'JWT',
     'JWT_LEEWAY': 0,
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=86400),
     'JWT_ALLOW_REFRESH': True,

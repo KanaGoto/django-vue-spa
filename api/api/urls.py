@@ -18,22 +18,24 @@ from django.urls import path, re_path, include
 from django.views.static import serve
 from api.settings import MEDIA_ROOT
 from rest_framework.routers import DefaultRouter
-from goods.views import GoodsListViewSet
 import xadmin
+from goods.views import GoodsListViewSet
 from goods.views import CategoryViewSet
-from user_operation.views import ReviewsListViewSet
+from user_operation.views import ReviewsViewSet
 from rest_framework_jwt.views import obtain_jwt_token # 追加
+from django.conf.urls import url
 
 router = DefaultRouter()
 router.register(r'goods', GoodsListViewSet)
 router.register(r'categorys', CategoryViewSet, base_name="categorys")
-router.register(r'reviews', ReviewsListViewSet, base_name="reviews")
+router.register(r'reviews', ReviewsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('xadmin/', xadmin.site.urls),
-    path('auth/', obtain_jwt_token), # 追加
+    url(r'^login/', obtain_jwt_token),
+    re_path(r'^users/', include('users.urls')),
+    #path('auth/', obtain_jwt_token), # 追加
     re_path(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
     re_path('^', include(router.urls)),
-
 ]

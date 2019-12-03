@@ -8,6 +8,8 @@ export default new Vuex.Store({
   state: {
     isLoggedIn: false, //ログイン状態,
     products: null,
+    reviews: [],
+    setIsReviewCreated: [],
     hedgehogs: [],
     user: null,
     isAuthenticated: false,
@@ -27,6 +29,9 @@ export default new Vuex.Store({
     },
     setProducts(state, payload) {
       state.products = payload;
+    },
+    setReviews(state, payload) {
+      state.reviews = payload;
     },
     setHedgehogs(state, payload) {
       state.hedgehogs = payload;
@@ -90,6 +95,37 @@ export default new Vuex.Store({
         .catch(e => {
             commit("setProducts", []);
             alert("プロダクト取得失敗");
+          })
+      );
+    },
+    createReview({ commit }, [star, title, comment, prod, user]) {
+      return (
+        client.reviews
+          .create(star, title, comment, prod, user)
+          .then(res => {
+            commit("setIsReviewCreated", res.data);
+            return res.data;
+          })
+          // eslint-disable-next-line
+        .catch(e => {
+            alert("レビュー投稿失敗");
+          })
+      );
+    },
+    getReviews({ commit }, pageNo) {
+      return (
+        client.reviews
+          .findAll(pageNo)
+          .then(res => {
+            // eslint-disable-next-line
+            console.log(res.data);
+            commit("setReviews", res.data);
+            return res.data;
+          })
+          // eslint-disable-next-line
+        .catch(e => {
+            commit("setReviews", []);
+            alert("レビュー一覧取得失敗");
           })
       );
     }
@@ -176,8 +212,6 @@ export default new Vuex.Store({
       return state.message;
     },
     products: state => state.products,
-    product(state, id) {
-      state.products.find(el => el.id === id);
-    }
+    reviews: state => state.reviews
   }
 });
