@@ -1,12 +1,12 @@
 export default function(cli) {
   /* eslint-disable */
   return {
-    login(username, password) {
+    login(email, password) {
       const data = {
-        username,
+        email,
         password
       };
-      return cli.post("auth/", data);
+      return cli.post("login/", data);
     },
     verify(token) {
       return cli.post("auth/verify/", { token });

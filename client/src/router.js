@@ -1,11 +1,11 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
+//import Home from "./views/Home.vue";
 import store from "@/store.js";
 import test from "./components/Test.vue";
 import test1 from "./components/Test1.vue";
 import test2 from "./components/Test2.vue";
-
+import Members from "@/views/Members.vue";
 import Login from "@/views/Login.vue";
 import MyPage from "@/views/MyPage.vue";
 import ProductList from "@/views/ProductList.vue";
@@ -19,9 +19,9 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
-      name: "home",
-      component: Home
+      path: "/members",
+      name: "members",
+      component: Members
     },
     {
       path: "/login",
@@ -30,7 +30,7 @@ const router = new Router({
     },
     {
       path: "/mypage",
-      name: "my-page-view",
+      name: "mypage",
       component: MyPage
     },
     {
