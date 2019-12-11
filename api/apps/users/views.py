@@ -7,18 +7,18 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework import status, viewsets, filters
 from rest_framework.views import APIView
-from .serializer import AccountSerializer
-from .models import Account, AccountManager
+from .serializer import UserSerializer, AddressSerializer, AuthSerializer
+from .models import User, UserManager, Address
 
 # ユーザ作成のView(POST)
 class AuthRegister(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
+    queryset = User.objects.all()
+    serializer_class = AuthSerializer
 
     @transaction.atomic
     def post(self, request, format=None):
-        serializer = AccountSerializer(data=request.data)
+        serializer = AuthSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -27,41 +27,60 @@ class AuthRegister(generics.CreateAPIView):
 
 class AuthInfoGetView(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
     def get(self, request, format=None):
+        try:
+            address = AddressSerializer(Address.objects.filter(user__user_id=request.user.user_id), many=True).data
+            #return Response(serializer.data)
+        except Address.DoesNotExist:
+            address = []
+        
         return Response(data={
             'username': request.user.username,
             'email': request.user.email,
             'profile': request.user.profile,
+            'address': address
             },
             status=status.HTTP_200_OK)
 
 
 class AuthInfoUpdateView(generics.UpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = AccountSerializer
+    serializer_class = AuthSerializer
     lookup_field = 'email'
-    queryset = Account.objects.all()
+    queryset = User.objects.all()
 
     def get_object(self):
         try:
             instance = self.queryset.get(email=self.request.user)
             return instance
-        except Account.DoesNotExist:
+        except User.DoesNotExist:
             raise Http404
 
 # ユーザ削除のView(DELETE)
 class AuthInfoDeleteView(generics.DestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = AccountSerializer
+    serializer_class = AuthSerializer
     lookup_field = 'email'
-    queryset = Account.objects.all()
+    queryset = User.objects.all()
 
     def get_object(self):
         try:
             instance = self.queryset.get(email=self.request.user)
             return instance
-        except Account.DoesNotExist:
+        except User.DoesNotExist:
             raise Http404
+
+class AddressListView(generics.ListCreateAPIView):
+     permission_classes = (permissions.AllowAny,)
+     queryset = Address.objects.all()
+     serializer_class = AddressSerializer
+
+class AddressRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+     permission_classes = (permissions.AllowAny,)
+     queryset = Address.objects.all()
+     serializer_class = AddressSerializer
+     lookup_field = 'pk'
+

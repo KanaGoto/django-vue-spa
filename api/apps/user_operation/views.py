@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from rest_framework import mixins, viewsets, generics, permissions
-from .models import Reviews
 from .serializer import ReviewsSerializer
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
+from rest_framework import filters, generics, status
 from .filters import ReviewsFilter
+from rest_framework.response import Response
+from django.http import HttpResponse, Http404
+from .models import Reviews
+
 # Create your views here.
 
 class ReviewsSetPagination(PageNumberPagination):
@@ -13,7 +16,8 @@ class ReviewsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
-class ReviewsViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class ReviewsListCreate(generics.ListCreateAPIView):
+     permission_classes = (permissions.AllowAny,)
      queryset = Reviews.objects.all()
      serializer_class = ReviewsSerializer
      """ページング"""
@@ -26,5 +30,8 @@ class ReviewsViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.Ge
      search_fields = ['star']
      ordering_fields = ['add_time', 'star']
 
-
-
+class ReviewsRetrieveUpdate(generics.RetrieveUpdateAPIView):
+     permission_classes = (permissions.AllowAny,)
+     queryset = Reviews.objects.all()
+     serializer_class = ReviewsSerializer
+     lookup_field = 'pk'
