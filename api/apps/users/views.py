@@ -27,6 +27,7 @@ class AuthRegister(generics.CreateAPIView):
 
 class AuthInfoGetView(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
+    #permission_classes = (permissions.AllowAny,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -38,9 +39,11 @@ class AuthInfoGetView(generics.RetrieveAPIView):
             address = []
         
         return Response(data={
+            'id': request.user.user_id,
             'username': request.user.username,
             'email': request.user.email,
             'profile': request.user.profile,
+            'image': request.user.imgae,
             'address': address
             },
             status=status.HTTP_200_OK)
@@ -48,6 +51,7 @@ class AuthInfoGetView(generics.RetrieveAPIView):
 
 class AuthInfoUpdateView(generics.UpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
+    #permission_classes = (permissions.AllowAny,)
     serializer_class = AuthSerializer
     lookup_field = 'email'
     queryset = User.objects.all()

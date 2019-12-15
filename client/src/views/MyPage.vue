@@ -11,7 +11,7 @@
             <v-icon>mdi-heart</v-icon>
           </v-btn>
           <v-btn icon>
-            <v-icon>mdi-cart</v-icon>
+            <v-icon @click.stop="drawer = !drawer">mdi-cart</v-icon>
           </v-btn>
           <v-tabs
             slot="extension"
@@ -23,6 +23,26 @@
           </v-tabs>
         </v-toolbar>
       </v-row>
+
+      <v-navigation-drawer v-model="drawer" absolute temporary right>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>カート内の商品</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list dense>
+          <v-list-item v-for="item in items" :key="item.title" link>
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
     </v-card>
 
     <v-tabs-items v-model="tabs">
@@ -54,8 +74,12 @@ export default {
     return {
       titles: ["home", "following", "profile"],
       tabs: null,
-      text:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      drawer: null,
+      items: [
+        { title: "Home", icon: "dashboard" },
+        { title: "About", icon: "question_answer" }
+      ],
+      isLoggedIn: false
     };
   }
 };

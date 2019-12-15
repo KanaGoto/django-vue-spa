@@ -4,6 +4,7 @@ import auth from "./auth";
 import questions from "./questions";
 import products from "./products";
 import reviews from "./reviews";
+import shopping from "./shopping";
 
 const client = axios.create({
   baseURL: "http://localhost:8000/"
@@ -15,13 +16,6 @@ client.questions = questions(client);
 //toDo
 client.products = products(client);
 client.reviews = reviews(client);
-
-// client.install = function(Vue) {
-//   Object.defineProperty(Vue.prototype, "$request", {
-//     get() {
-//       return client;
-//     }
-//   });
-//};
+client.shopping = shopping(client);
 
 export default client;

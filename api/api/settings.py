@@ -45,8 +45,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'users',
     'products',
-    'trade',
-    'user_operation',
+    'shopping',
+    'reviews',
+    'favorites',
     'crispy_forms',
     'xadmin',
     'django_filters'

@@ -12,6 +12,7 @@ export default new Vuex.Store({
     setIsReviewCreated: [],
     hedgehogs: [],
     user: null,
+    userInfo: null,
     isAuthenticated: false,
     userFavolites: [],
     message: "初期メッセージ"
@@ -38,6 +39,9 @@ export default new Vuex.Store({
     },
     setUser(state, payload) {
       state.user = payload;
+    },
+    setUserInfo(state, payload) {
+      state.userInfo = payload;
     },
     setIsAuthenticated(state, payload) {
       state.isAuthenticated = payload;
@@ -81,22 +85,39 @@ export default new Vuex.Store({
         );
       }
     },
+    userRegister({ commit }, userInfo) {
+      return new Promise((resolve, reject) => {
+        client.auth
+          .userRegister(userInfo)
+          .then(res => {
+            // eslint-disable-next-line
+            console.log(res.data);
+            commit("setUserInfo", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            commit("setUserInfo", []);
+            alert("会員登録失敗");
+            reject(err);
+          });
+      });
+    },
     getProducts({ commit }, pageNo) {
-      return (
+      return new Promise((resolve, reject) => {
         client.products
           .findAll(pageNo)
           .then(res => {
             // eslint-disable-next-line
             console.log(res.data);
             commit("setProducts", res.data);
-            return res.data;
+            resolve(res.data);
           })
-          // eslint-disable-next-line
-        .catch(e => {
+          .catch(err => {
             commit("setProducts", []);
             alert("プロダクト取得失敗");
-          })
-      );
+            reject(err);
+          });
+      });
     },
     createReview({ commit }, [star, title, comment, prod, user]) {
       return (

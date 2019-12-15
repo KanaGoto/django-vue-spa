@@ -116,7 +116,11 @@ export default {
       }
     ]
   }),
-
+  created() {
+    if (this.$store.getters.isLoggedIn === false) {
+      document.location = "/login";
+    }
+  },
   methods: {
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;

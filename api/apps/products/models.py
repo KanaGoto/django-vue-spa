@@ -24,7 +24,7 @@ class Products(models.Model):
     商品
     """
     name = models.CharField(max_length=100, verbose_name="商品名")
-    category = models.ForeignKey(ProductsCategory, verbose_name="商品カテゴリー", related_name="products", on_delete=models.CASCADE)
+    category = models.ForeignKey(ProductsCategory, null=True,verbose_name="商品カテゴリー", related_name="products", on_delete=models.CASCADE)
     sold_num = models.IntegerField(default=0, verbose_name="販売数")
     fav_num = models.IntegerField(default=0, verbose_name="お気に入り登録数")
     products_num = models.IntegerField(default=0, verbose_name="在庫数")
@@ -35,7 +35,7 @@ class Products(models.Model):
     image = models.ImageField(max_length=200, upload_to=" products/images/",
                                           null=True, blank=True, verbose_name="画像")
     is_onsale = models.BooleanField(default=True, verbose_name="販売中")
-    seller = models.ForeignKey(User, verbose_name="販売者", related_name="products_sold", on_delete=models.CASCADE)
+    seller = models.ForeignKey(User,null=True, verbose_name="販売者", related_name="products_sold", on_delete=models.CASCADE)
     buyer = models.ForeignKey(User, null=True, blank=True, verbose_name="購入者", related_name="products_purchased", on_delete=models.CASCADE)
     add_time = models.DateTimeField(default=datetime.now, verbose_name="投稿時間")
 

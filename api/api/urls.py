@@ -28,7 +28,8 @@ urlpatterns = [
     url(r'^login/', obtain_jwt_token),
     re_path(r'^users/', include('users.urls')),
     re_path(r'^products/', include('products.urls')),
-    #path('auth/', obtain_jwt_token), # 追加
-    re_path(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
-    re_path(r'^reviews/', include('user_operation.urls'))
+    re_path(r'^shopping/', include('shopping.urls')),
+    re_path(r'^reviews/', include('reviews.urls')),
+    re_path(r'^favorites/', include('favorites.urls')),
+    re_path(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT})
 ]

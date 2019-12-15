@@ -1,6 +1,6 @@
 <template>
   <div class="members">
-    <app-navbar>members regisration</app-navbar>
+    <app-navbar>Members Registration</app-navbar>
     <v-container fill-height>
       <v-layout row wrap align-center>
         <v-layout>
@@ -8,7 +8,7 @@
             <v-form ref="form" v-model="valid" :lazy-validation="lazy">
               <p>
                 <v-text-field
-                  v-model="name"
+                  v-model="userInfo.username"
                   :counter="10"
                   :rules="nameRules"
                   label="User Name"
@@ -17,7 +17,7 @@
               </p>
               <p>
                 <v-text-field
-                  v-model="email"
+                  v-model="userInfo.email"
                   :rules="emailRules"
                   label="Email"
                   required
@@ -34,7 +34,7 @@
               </p>
               <p>
                 <v-text-field
-                  v-model="password"
+                  v-model="userInfo.password"
                   label="password"
                   :append-icon-cb="() => (showPassword = !showPassword)"
                   :type="showPassword ? 'text' : 'password'"
@@ -51,13 +51,10 @@
                 label="Do you agree with xxxx?"
                 required
               ></v-checkbox>
-
-              <v-btn color="error" class="mr-4" @click="reset">
-                Go Back
-              </v-btn>
               <span class="submit">
-                <v-btn color="warning" @click="resetValidation">
-                  complete registration
+                <v-spacer></v-spacer>
+                <v-btn color="warning" @click="submit()">
+                  complete
                 </v-btn>
               </span>
             </v-form>
@@ -68,20 +65,24 @@
   </div>
 </template>
 <script>
+import userInfoDao from "../api/dao/userInfo";
 import { mapActions } from "vuex";
-
 export default {
   name: "Login",
   data() {
     return {
-      username: null,
-      password: null,
+      userInfoDao: userInfoDao,
+      userInfo: {
+        username: null,
+        password: null,
+        email: "",
+        is_active: true
+      },
       showPassword: false,
       nonFieldErrors: [],
       usernameRules: [v => !!v || "ログインIDを入力してください"],
       passwordRules: [v => !!v || "パスワードを入力してください"],
       valid: true,
-      name: "",
       nameRules: [
         v => !!v || "Name is required",
         v => (v && v.length <= 10) || "Name must be less than 10 characters"
@@ -92,7 +93,7 @@ export default {
         v => /.+@.+\..+/.test(v) || "E-mail must be valid"
       ],
       select: null,
-      gender: ["female", "male", "don't ask"],
+      gender: ["female", "male", "secret"],
       checkbox: false,
       lazy: false
     };
@@ -103,20 +104,20 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["userRegister"]),
     ...mapActions(["login"]),
     submit() {
+      this.resetValidation();
       let self = this;
       this.nonFieldErrors = [];
-      this.login([this.username, this.password]).then(
+      this.userRegister(this.userInfo).then(
         /* eslint-disable */
         res => {
-          if(this.isLoggedIn === true){
-            alert("ok");
-            self.$router.push("/mypage");
-          }
+          alert(self.userInfo.email)
+          this.afterRegist()
         },
         err => {
-          this.nonFieldErrors = err.response.data.nonFieldErrors;
+          self.nonFieldErrors = err.response.data.nonFieldErrors;
         }
       );
     },
@@ -131,6 +132,19 @@ export default {
       resetValidation () {
         this.$refs.form.resetValidation()
       },
+      afterRegist(){
+        self = this;
+        this.login([this.userInfo.email, this.userInfo.password]).then(
+          res => {
+            if(self.isLoggedIn === true){
+              alert("ok");
+              self.$router.push("/mypage");
+            }
+          },
+          err => {
+            self.nonFieldErrors = err.response.data.nonFieldErrors;
+          })
+      }
   }
 };
 </script>

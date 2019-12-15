@@ -1,8 +1,11 @@
 from django.shortcuts import render
+from django.db import transaction
 from rest_framework import generics, permissions
 from .models import Products, ProductsCategory
 from .serializer import ProductsSerializer, CategorySerializer
 from rest_framework.pagination import PageNumberPagination
+from users.serializer import AuthSerializer
+from users.models import User
 
 # Create your views here.
 
@@ -23,10 +26,16 @@ class ProductsListCreateView(generics.ListCreateAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
 
+    @transaction.atomic
+    def post(self, request, format=None):
+        serializer = ProductsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ProductsRetrieveView(generics.RetrieveUpdateAPIView):
     permission_classes = (permissions.AllowAny,)
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
-
-    
-

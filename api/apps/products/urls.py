@@ -4,7 +4,7 @@ from django.urls import path
 from .views import ProductsListCreateView, CategoryListCreateView, ProductsRetrieveView
 
 urlpatterns = [
-    url(r'$', ProductsListCreateView.as_view()),
+    url(r'^$', ProductsListCreateView.as_view()),
     path('update/<str:pk>/', ProductsRetrieveView.as_view()),
     url(r'^category/$', CategoryListCreateView.as_view()),
  ]

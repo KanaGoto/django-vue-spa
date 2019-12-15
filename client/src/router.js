@@ -5,7 +5,7 @@ import store from "@/store.js";
 import test from "./components/Test.vue";
 import test1 from "./components/Test1.vue";
 import test2 from "./components/Test2.vue";
-import Members from "@/views/Members.vue";
+import Register from "@/views/Register.vue";
 import Login from "@/views/Login.vue";
 import MyPage from "@/views/MyPage.vue";
 import ProductList from "@/views/ProductList.vue";
@@ -19,9 +19,9 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/members",
-      name: "members",
-      component: Members
+      path: "/register",
+      name: "register",
+      component: Register
     },
     {
       path: "/login",

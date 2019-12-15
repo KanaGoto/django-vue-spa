@@ -30,7 +30,7 @@
       </p>
     </v-form>
     <div class="login-help">
-      <p>Forgot your password? <a href="#">Click here to reset it</a>.</p>
+      <h3>Click here for <a href="/register">regisration</a>.</h3>
     </div>
   </div>
 </template>

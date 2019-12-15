@@ -55,6 +55,8 @@ class User(AbstractBaseUser):
     is_active   = models.BooleanField(default=True)
     is_staff    = models.BooleanField(default=False)
     is_admin    = models.BooleanField(default=False)
+    image = models.ImageField(max_length=200, upload_to="users/images/",
+                                          null=True, blank=True, verbose_name="画像")
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     
     objects = UserManager()
