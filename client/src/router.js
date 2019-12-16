@@ -2,9 +2,6 @@ import Vue from "vue";
 import Router from "vue-router";
 //import Home from "./views/Home.vue";
 import store from "@/store.js";
-import test from "./components/Test.vue";
-import test1 from "./components/Test1.vue";
-import test2 from "./components/Test2.vue";
 import Register from "@/views/Register.vue";
 import Login from "@/views/Login.vue";
 import MyPage from "@/views/MyPage.vue";
@@ -74,22 +71,6 @@ const router = new Router({
       path: "/join",
       name: "join",
       component: () => import("./views/Join.vue")
-    },
-    /* 以下テスト用 */
-    {
-      path: "/test",
-      name: "test",
-      component: test
-    },
-    {
-      path: "/test1",
-      name: "test1",
-      component: test1
-    },
-    {
-      path: "/test2",
-      name: "test2",
-      component: test2
     }
   ]
 });

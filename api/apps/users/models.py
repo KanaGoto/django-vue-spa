@@ -47,7 +47,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     user_id     = models.AutoField(verbose_name="user_id", primary_key=True)
-    username    = models.CharField(_('username'), max_length=30, unique=True)
+    username    = models.CharField(_('username'), max_length=30)
     first_name  = models.CharField(_('first name'), max_length=30, blank=True)
     last_name   = models.CharField(_('last name'), max_length=30, blank=True)
     email       = models.EmailField(verbose_name='email address', max_length=255, unique=True)
@@ -87,6 +87,14 @@ class User(AbstractBaseUser):
     @property
     def is_superuser(self):
         return self.is_admin
+
+    @staticmethod
+    def get_default_user():
+        user, created = User.objects.get_or_create(
+            username = 'unknown user',
+            email= 'xxx@sample.com'
+        )
+        return buyer
 
     class Meta:
         db_table = 'api_user'

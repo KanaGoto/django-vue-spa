@@ -1,73 +1,76 @@
 <template>
-  <div class="members">
-    <app-navbar>Members Registration</app-navbar>
-    <v-alert :value="nonFieldErrors.length" type="error">
-      <div v-for="error in nonFieldErrors" :key="error">
-        <h5>
-          {{ error }}
-        </h5>
-      </div>
-    </v-alert>
-    <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-      <p>
-        <v-text-field
-          v-model="userInfo.username"
-          :counter="10"
-          :rules="nameRules"
-          label="User Name"
-          required
-        ></v-text-field>
-      </p>
-      <p>
-        <v-text-field
-          v-model="userInfo.email"
-          :rules="emailRules"
-          label="Email"
-          required
-        ></v-text-field>
-      </p>
-      <p>
-        <v-select
-          v-model="select"
-          :items="gender"
-          :rules="[v => !!v || 'gender is required']"
-          label="gender"
-          required
-        ></v-select>
-      </p>
-      <p>
-        <v-text-field
-          v-model="userInfo.password"
-          label="password"
-          :append-icon-cb="() => (showPassword = !showPassword)"
-          :type="showPassword ? 'text' : 'password'"
-          :rules="passwordRules"
-          required
-        ></v-text-field>
-      </p>
-      <p>
-        <v-textarea label="Profile" rows="3"></v-textarea>
-      </p>
-      <div class="submit">
-        <v-spacer></v-spacer>
-        <v-spacer></v-spacer>
-        <v-checkbox
-          v-model="checkbox"
-          :rules="[v => !!v || 'You must agree to continue!']"
-          label="agree with our membership"
-          required
-        ></v-checkbox>
-        <v-btn color="warning" :disabled="!valid" @click="submit()">
-          complete
-        </v-btn>
-      </div>
-    </v-form>
-  </div>
+  <v-dialog v-model="dialogs.dialog" width="500">
+    <div class="prodForm">
+      <app-navbar>Members Registration</app-navbar>
+      <v-alert :value="nonFieldErrors.length" type="error">
+        <div v-for="error in nonFieldErrors" :key="error">
+          <h5>
+            {{ error }}
+          </h5>
+        </div>
+      </v-alert>
+      <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+        <p>
+          <v-text-field
+            v-model="userInfo.username"
+            :counter="10"
+            :rules="nameRules"
+            label="User Name"
+            required
+          ></v-text-field>
+        </p>
+        <p>
+          <v-text-field
+            v-model="userInfo.email"
+            :rules="emailRules"
+            label="Email"
+            required
+          ></v-text-field>
+        </p>
+        <p>
+          <v-select
+            v-model="select"
+            :items="gender"
+            :rules="[v => !!v || 'gender is required']"
+            label="gender"
+            required
+          ></v-select>
+        </p>
+        <p>
+          <v-text-field
+            v-model="userInfo.password"
+            label="password"
+            :append-icon-cb="() => (showPassword = !showPassword)"
+            :type="showPassword ? 'text' : 'password'"
+            :rules="passwordRules"
+            required
+          ></v-text-field>
+        </p>
+        <p>
+          <v-textarea label="Profile" rows="3"></v-textarea>
+        </p>
+        <div class="submit">
+          <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
+          <v-checkbox
+            v-model="checkbox"
+            :rules="[v => !!v || 'You must agree to continue!']"
+            label="agree with our membership"
+            required
+          ></v-checkbox>
+          <v-btn color="warning" :disabled="!valid" @click="submit()">
+            complete
+          </v-btn>
+        </div>
+      </v-form>
+    </div>
+  </v-dialog>
 </template>
+
 <script>
 import { mapActions } from "vuex";
 export default {
-  name: "Login",
+  props: ["dialogs"],
   data() {
     return {
       valid: false,
@@ -96,12 +99,8 @@ export default {
       lazy: false
     };
   },
-  computed: {
-    isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
-    }
-  },
-  methods: {
+  created() {},
+  method: {
     ...mapActions(["userRegister"]),
     ...mapActions(["login"]),
     submit() {
@@ -151,7 +150,7 @@ export default {
 </script>
 
 <style scoped>
-.members {
+.prodForm {
   position: relative;
   text-align: center;
   margin: 30px auto;
@@ -159,12 +158,12 @@ export default {
   width: 500px;
   background: white;
   border-radius: 3px;
-  -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5),
+    0 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .submit {
   text-align: right;
 }
-
 </style>

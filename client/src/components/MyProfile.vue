@@ -23,7 +23,7 @@
               :disabled="loading3"
               color="green"
               class="ma-2 white--text"
-              @click="loader = 'loading3'"
+              @click="openUserModal()"
             >
               Edit Profile
               <v-icon right dark>mdi-account-circle</v-icon>
@@ -33,11 +33,15 @@
               :disabled="loading3"
               color="blue-grey"
               class="ma-2 white--text"
-              @click="loader = 'loading3'"
+              @click="openProdUploadModal()"
             >
               add new products
               <v-icon right dark>mdi-cloud-upload</v-icon>
             </v-btn>
+            <user-dialog :dialogs="userDialogs"></user-dialog>
+            <prod-upload-dialog
+              :dialogs="prodUploadDialogs"
+            ></prod-upload-dialog>
           </div>
         </v-col>
       </v-row>
@@ -90,8 +94,22 @@
   </div>
 </template>
 <script>
+import userDialog from "@/components/UserDialog.vue";
+import prodUploadDialog from "@/components/ProdUploadDialog.vue";
 export default {
+  components: {
+    userDialog: userDialog,
+    prodUploadDialog: prodUploadDialog
+  },
   data: () => ({
+    userDialogs: {
+      dialog: false,
+      prod: []
+    },
+    prodUploadDialogs: {
+      dialog: false,
+      prod: []
+    },
     offsetTop: 0,
     cards: [
       {
@@ -124,6 +142,12 @@ export default {
   methods: {
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;
+    },
+    openUserModal() {
+      this.userDialogs.dialog = true;
+    },
+    openProdUploadModal() {
+      this.prodUploadDialogs.dialog = true;
     }
   }
 };

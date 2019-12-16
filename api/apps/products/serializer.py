@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import  Products,  ProductsCategory
-from users.serializer import AuthSerializer
+from .models import *
+from users.serializer import *
+from users.models import *
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,9 +9,9 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ProductsSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
-    seller = AuthSerializer()
-    buyer = AuthSerializer()
+    category = CategorySerializer(read_only=True)
+    seller = AuthSerializer(read_only=True)
+    buyer = AuthSerializer(read_only=True)
 
     class Meta:    
         model =  Products
