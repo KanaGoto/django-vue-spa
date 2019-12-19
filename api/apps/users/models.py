@@ -55,8 +55,8 @@ class User(AbstractBaseUser):
     is_active   = models.BooleanField(default=True)
     is_staff    = models.BooleanField(default=False)
     is_admin    = models.BooleanField(default=False)
-    image = models.ImageField(max_length=200, upload_to="users/images/",
-                                          null=True, blank=True, verbose_name="画像")
+    pic         = models.ImageField(_('pic'), max_length=200, upload_to="users/images/",
+                                          null=True, blank=True)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     
     objects = UserManager()
@@ -101,6 +101,9 @@ class User(AbstractBaseUser):
         swappable = 'AUTH_USER_MODEL'
         verbose_name = "顧客"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.username
 
 
 class Address(models.Model):

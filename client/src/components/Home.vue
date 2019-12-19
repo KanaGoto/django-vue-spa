@@ -23,7 +23,7 @@
             >
             </v-img>
             <v-card-text>
-              dericious!
+              {{ prod.brief }}
             </v-card-text>
             <v-card-actions>
               <v-btn

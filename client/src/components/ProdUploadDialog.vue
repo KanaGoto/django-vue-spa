@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialogs.dialog" width="500">
     <div class="prodForm">
-      <app-navbar>Members Registration</app-navbar>
+      <app-navbar>Upload Your Product</app-navbar>
       <v-alert :value="nonFieldErrors.length" type="error">
         <div v-for="error in nonFieldErrors" :key="error">
           <h5>
@@ -12,54 +12,68 @@
       <v-form ref="form" v-model="valid" :lazy-validation="lazy">
         <p>
           <v-text-field
-            v-model="userInfo.username"
-            :counter="10"
+            v-model="prodInfo.name"
+            :counter="20"
             :rules="nameRules"
-            label="User Name"
-            required
-          ></v-text-field>
-        </p>
-        <p>
-          <v-text-field
-            v-model="userInfo.email"
-            :rules="emailRules"
-            label="Email"
+            label="Name"
             required
           ></v-text-field>
         </p>
         <p>
           <v-select
-            v-model="select"
-            :items="gender"
-            :rules="[v => !!v || 'gender is required']"
-            label="gender"
+            v-model="prodInfo.category"
+            item-text="name"
+            item-value="id"
+            :items="categories"
+            :rules="[v => !!v || 'category is required']"
+            label="category"
             required
-          ></v-select>
+          />
+        </p>
+        <p>
+          <img v-show="uploadedImage" :src="uploadedImage" />
+          <v-file-input v-on:change="onFileChange" label="image" />
         </p>
         <p>
           <v-text-field
-            v-model="userInfo.password"
-            label="password"
-            :append-icon-cb="() => (showPassword = !showPassword)"
-            :type="showPassword ? 'text' : 'password'"
-            :rules="passwordRules"
+            v-model="prodInfo.market_price"
+            label="Market Price"
+          ></v-text-field>
+        </p>
+        <p>
+          <v-text-field
+            v-model="prodInfo.sales_price"
+            :rules="salesPriceRules"
+            label="Sales Price"
             required
           ></v-text-field>
         </p>
         <p>
-          <v-textarea label="Profile" rows="3"></v-textarea>
+          <v-text-field
+            v-model="prodInfo.products_num"
+            label="Stock Quantity"
+            required
+          ></v-text-field>
+        </p>
+        <p>
+          <v-textarea
+            v-model="prodInfo.brief"
+            label="Description"
+            :counter="20"
+            :rules="descriptionRules"
+            required
+            rows="5"
+          ></v-textarea>
         </p>
         <div class="submit">
           <v-spacer></v-spacer>
           <v-spacer></v-spacer>
           <v-checkbox
-            v-model="checkbox"
-            :rules="[v => !!v || 'You must agree to continue!']"
-            label="agree with our membership"
-            required
+            v-model="prodInfo.ship_free"
+            label="ship free"
           ></v-checkbox>
-          <v-btn color="warning" :disabled="!valid" @click="submit()">
-            complete
+          <v-btn color="warning" :disabled="!valid" @click="upload()">
+            upload
           </v-btn>
         </div>
       </v-form>
@@ -74,47 +88,65 @@ export default {
   data() {
     return {
       valid: false,
-      userInfo: {
-        username: null,
-        password: null,
-        email: "",
-        is_active: true
+      prodInfo: {
+        name: null,
+        category: null,
+        products_num: null,
+        market_price: null,
+        sales_price: null,
+        brief: null,
+        ship_free: false,
+        image: null,
+        seller: 1
       },
-      showPassword: false,
       nonFieldErrors: [],
-      usernameRules: [v => !!v || "your name is required"],
+      salesPriceRules: [v => !!v || "sales price is required"],
       passwordRules: [v => !!v || "password is required"],
       nameRules: [
         v => !!v || "Name is required",
-        v => (v && v.length <= 10) || "Name must be less than 10 characters"
+        v => (v && v.length <= 20) || "Name must be less than 10 characters"
       ],
-      email: "",
-      emailRules: [
-        v => !!v || "E-mail is required",
-        v => /.+@.+\..+/.test(v) || "E-mail must be valid"
+      descriptionRules: [
+        v => !!v || "Description is required",
+        v =>
+          (v && v.length <= 1000) ||
+          "Description must be less than 1000 characters"
       ],
-      select: null,
-      gender: ["female", "male", "secret"],
       checkbox: false,
-      lazy: false
+      lazy: false,
+      uploadedImage: "",
+      categories: []
     };
   },
-  created() {},
-  method: {
-    ...mapActions(["userRegister"]),
-    ...mapActions(["login"]),
-    submit() {
-      this.resetValidation();
+  created() {
+    /* eslint-disable */
+    let self = this;
+    this.$store.dispatch("getCategory").then(res =>{
+      self.categories = res;
+    });
+  },
+  computed:{
+    getUserInfo(){
+      //to DO
+      //return this.$store.getters.userInfo;
+      return 1
+    }
+  },
+  methods: {
+    ...mapActions(["createProduct"]),
+    upload() {
       let self = this;
+      this.resetValidation();
       this.nonFieldErrors = [];
-      this.userRegister(this.userInfo).then(
+      this.createProduct(this.prodInfo).then(
         /* eslint-disable */
         res => {
-          alert(self.userInfo.email)
-          this.afterRegist()
+          self.dialogs.dialog = false;
+          self.clearProdInfo();
+          //self.$router.push("/mypage");
         },
         err => {
-          self.nonFieldErrors = this.getApiError(err.response.data);
+          this.nonFieldErrors = this.getApiError(err);
         }
       );
     },
@@ -129,21 +161,30 @@ export default {
       resetValidation () {
         this.$refs.form.resetValidation()
       },
-      afterRegist(){
-        self = this;
-        this.login([this.userInfo.email, this.userInfo.password]).then(
-          res => {
-            if(self.isLoggedIn === true){
-              alert("ok");
-              self.$router.push("/mypage");
-            }
-          },
-          err => {
-            self.nonFieldErrors = err.response.data.nonFieldErrors;
-          })
+      clearProdInfo(){
+        this.prodInfo.name = null;
+        this.prodInfo.category = null;
+        this.prodInfo.products_num = null;
+        this.prodInfo.market_price = null;
+        this.prodInfo.sales_price = null;
+        this.prodInfo.brief = null;
+        this.prodInfo.ship_free = false;
+        this.prodInfo.image = null;
       },
       getApiError(obj){
         return Object.keys(obj).map(function (key) { return obj[key][0]; })
+      },
+      onFileChange(e) {
+        let files = e.target.files || e.dataTransfer.files;
+        this.createImage(files[0]);
+      },
+      // アップロードした画像を表示
+      createImage(file) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          this.uploadedImage = e.target.result;
+        };
+        reader.readAsDataURL(file);
       }
   }
 };

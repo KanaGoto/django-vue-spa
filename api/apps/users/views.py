@@ -43,7 +43,7 @@ class AuthInfoGetView(generics.RetrieveAPIView):
             'username': request.user.username,
             'email': request.user.email,
             'profile': request.user.profile,
-            'image': request.user.imgae,
+            'image': request.user.pic,
             'address': address
             },
             status=status.HTTP_200_OK)

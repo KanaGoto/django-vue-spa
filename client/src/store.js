@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     isLoggedIn: false, //ログイン状態,
     products: null,
+    prodCategory: [],
     reviews: [],
     setIsReviewCreated: [],
     hedgehogs: [],
@@ -30,6 +31,9 @@ export default new Vuex.Store({
     },
     setProducts(state, payload) {
       state.products = payload;
+    },
+    setProdCategory(state, payload) {
+      state.prodCategory = payload;
     },
     setReviews(state, payload) {
       state.reviews = payload;
@@ -107,14 +111,41 @@ export default new Vuex.Store({
         client.products
           .findAll(pageNo)
           .then(res => {
-            // eslint-disable-next-line
-            console.log(res.data);
             commit("setProducts", res.data);
             resolve(res.data);
           })
           .catch(err => {
             commit("setProducts", []);
             alert("プロダクト取得失敗");
+            reject(err);
+          });
+      });
+    },
+    // eslint-disable-next-line
+    createProduct({ commit }, prodInfo) {
+      return new Promise((resolve, reject) => {
+        client.products
+          .create(prodInfo)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("プロダクト登録失敗");
+            alert(err);
+            reject(err);
+          });
+      });
+    },
+    getCategory({ commit }) {
+      return new Promise((resolve, reject) => {
+        client.products
+          .category()
+          .then(res => {
+            commit("setProdCategory", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("プロダクトカテゴリー取得失敗");
             reject(err);
           });
       });
@@ -150,47 +181,6 @@ export default new Vuex.Store({
           })
       );
     }
-    // async getProducts({ state, commit }, color) {
-    //   try {
-    //     // eslint-disable-next-line
-    //     let response = await axios.get(
-    //       `${state.apiUrl}hedgehogs/?color=` + color
-    //     );
-    //     commit("setHedgehogs", response.data);
-    //   } catch (error) {
-    //     commit("setHedgehogs", []);
-    //   }
-    // }
-    // userLogin({ commit }, { email, password }) {
-    //   firebase
-    //     .auth()
-    //     .signInWithEmailAndPassword(email, password)
-    //     .then(user => {
-    //       commit("setUser", user);
-    //       commit("setIsAuthenticated", true);
-    //       router.push("/about");
-    //     })
-    //     .catch(() => {
-    //       commit("setUser", null);
-    //       commit("setIsAuthenticated", false);
-    //       router.push("/");
-    //     });
-    // },
-    // userJoin({ commit }, { email, password }) {
-    //   firebase
-    //     .auth()
-    //     .createUserWithEmailAndPassword(email, password)
-    //     .then(user => {
-    //       commit("setUser", user);
-    //       commit("setIsAuthenticated", true);
-    //       router.push("/about");
-    //     })
-    //     .catch(() => {
-    //       commit("setUser", null);
-    //       commit("setIsAuthenticated", false);
-    //       router.push("/");
-    //     });
-    // },
     // userSignOut({ commit }) {
     //   firebase
     //     .auth()
@@ -205,13 +195,6 @@ export default new Vuex.Store({
     //       commit("setIsAuthenticated", false);
     //       router.push("/");
     //     });
-    // },
-    // addFavolite({ state }, payload) {
-    //   firebase
-    //     .database()
-    //     .ref("users")
-    //     .child(state.user.user.uid)
-    //     .push(payload.name);
     // },
     // getUserFavolites({ state, commit }) {
     //   return firebase
@@ -232,7 +215,9 @@ export default new Vuex.Store({
     getMessage(state) {
       return state.message;
     },
+    userInfo: state => state.userInfo,
     products: state => state.products,
+    prodCategory: state => state.prodCategory,
     reviews: state => state.reviews
   }
 });

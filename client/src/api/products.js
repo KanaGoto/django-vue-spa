@@ -5,6 +5,12 @@ export default function(cli) {
     },
     findById(id) {
       return cli.post(`products/${id}/`);
+    },
+    create(prodInfo) {
+      return cli.post("products/", prodInfo);
+    },
+    category() {
+      return cli.get("products/category/");
     }
   };
 }

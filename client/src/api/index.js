@@ -13,7 +13,6 @@ const client = axios.create({
 /* apiを全て読み込む */
 client.auth = auth(client);
 client.questions = questions(client);
-//toDo
 client.products = products(client);
 client.reviews = reviews(client);
 client.shopping = shopping(client);

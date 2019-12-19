@@ -1,6 +1,9 @@
 <template>
   <v-dialog v-model="dialogs.dialog" width="500">
-    aaaaa
+    aaaaaaaaaaaaa aaaaaaaaaaaaaa
+    <v-btn color="warning" @click="submit()">
+      complete
+    </v-btn>
   </v-dialog>
 </template>
 
@@ -11,6 +14,11 @@ export default {
     return {
       prod_detail: []
     };
+  },
+  methods: {
+    submit() {
+      alert("ok");
+    }
   },
   created() {}
 };
