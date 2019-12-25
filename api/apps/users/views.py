@@ -37,13 +37,18 @@ class AuthInfoGetView(generics.RetrieveAPIView):
             #return Response(serializer.data)
         except Address.DoesNotExist:
             address = []
-        
+
+        try:
+            pic = request.user.pic.url
+        except:
+            pic = ""
+
         return Response(data={
-            'id': request.user.user_id,
+            'user_id': request.user.user_id,
             'username': request.user.username,
             'email': request.user.email,
             'profile': request.user.profile,
-            'image': request.user.pic,
+            'image': pic,
             'address': address
             },
             status=status.HTTP_200_OK)

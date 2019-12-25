@@ -33,6 +33,7 @@
         <p>
           <img v-if="uploadImageUrl" :src="uploadImageUrl" width="200" />
           <v-file-input
+            v-model="prodInfo.image"
             accept="image/*"
             show-size
             label="image"
@@ -142,17 +143,7 @@ export default {
       let self = this;
       this.resetValidation();
       this.nonFieldErrors = [];
-      let data = new FormData();
-      data.append('name', this.prodInfo.name);
-      data.append('category', this.prodInfo.category);
-      data.append('products_num', this.prodInfo.products_num);
-      data.append('market_price', this.prodInfo.market_price);
-      data.append('sales_price', this.prodInfo.sales_price);
-      data.append('ship_free', this.prodInfo.ship_free);
-      data.append('brief', this.prodInfo.brief);
-      data.append('image', this.prodInfo.image);
-      data.append('seller', this.prodInfo.seller);
-      this.createProduct(data).then(
+      this.createProduct(this.prodInfo).then(
         /* eslint-disable */
         res => {
           this.$store.dispatch("getUserProducts", this.userInfo.user_id);
@@ -199,27 +190,22 @@ export default {
         reader.onerror = error => reject(error)
       })
     },
-    inputFile: function(e) {
-      let self = this;
-      reader.onload = e => {
-        self.uploadImageUrl = e.target.result;
-      };
-      reader.readAsDataURL(e);
-      self.prodInfo.image = e;
-    },
       onImagePicked(file) {
         if (file !== undefined && file !== null) {
             if (file.name.lastIndexOf('.') <= 0) {
               return
             }
-            this.prodInfo.image = file;
-            const fr = new FileReader()
-            fr.readAsDataURL(file)
-            fr.addEventListener('load', () => {
-              this.uploadImageUrl = fr.result
+            let self = this;
+            this.getBase64(file).then(function(data){
+              self.prodInfo.image = data;
+              const fr = new FileReader()
+              fr.readAsDataURL(file)
+              fr.addEventListener('load', () => {
+                self.uploadImageUrl = fr.result
+              })
             })
         } else {
-          this.uploadImageUrl = ''
+          self.uploadImageUrl = ''
         }
     }
   }

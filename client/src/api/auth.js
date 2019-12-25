@@ -2,7 +2,6 @@ export default function(cli) {
   /* eslint-disable */
   return {
     login(email, password) {
-      alert("直前"+email)
       const data = {
         email,
         password
@@ -14,6 +13,9 @@ export default function(cli) {
     },
     userRegister(userInfo){
       return cli.post("users/register/", userInfo);
+    },
+    getUserInfo(){
+      return cli.get("users/info/");
     }
   };
 }

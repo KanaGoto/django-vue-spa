@@ -5,7 +5,9 @@
         <v-col v-for="prod in products" :key="prod.id" :cols="4">
           <v-card class="ma-3">
             <v-list-item>
-              <v-list-item-avatar color="grey"></v-list-item-avatar>
+              <v-list-item-avatar color="white" size="40">
+                <v-img :src="prod.seller.pic"></v-img>
+              </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title class="headline">{{
                   prod.name
@@ -62,9 +64,10 @@ export default {
   data() {
     return {
       products: [],
+      nextURL: null,
+      previousUrl: null,
       pageNo: 1,
       offsetTop: 0,
-      text: "ahha",
       dialogs: {
         dialog: false,
         prod: []
@@ -76,22 +79,17 @@ export default {
     this.$store
       .dispatch("getProducts", 1)
       .then(function(data) {
-        alert("okkk");
         self.products = data.results;
+        self.nextURL = data.next;
+        self.previousUrl = data.previous;
       })
       .catch(function(err) {
         alert(err);
       });
   },
   computed: {
-    // products() {
-    //   return this.$store.getters.products;
-    // },
-    nextURL() {
-      return this.$store.getters.products.next;
-    },
-    previousUrl() {
-      return this.$store.getters.products.previous;
+    newProducts() {
+      return this.$store.getters.products;
     },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
@@ -107,6 +105,13 @@ export default {
         return true;
       }
       return false;
+    }
+  },
+  watch: {
+    newProducts: function(newProd) {
+      this.products = newProd.results;
+      this.nextURL = newProd.next;
+      this.previousUrl = newProd.previous;
     }
   },
   methods: {

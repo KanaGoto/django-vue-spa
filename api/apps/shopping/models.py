@@ -52,4 +52,4 @@ class Order(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.item.name
+        return "注文履歴"

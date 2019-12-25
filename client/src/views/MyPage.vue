@@ -81,6 +81,12 @@ export default {
       ],
       isLoggedIn: false
     };
+  },
+  method: {
+    getProducts() {
+      alert("たぶ押した");
+      this.$store.dispatch("getProducts", 1);
+    }
   }
 };
 </script>

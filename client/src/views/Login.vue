@@ -58,6 +58,7 @@ export default {
   },
   methods: {
     ...mapActions(["login"]),
+    ...mapActions(["getUserInfo"]),
     submit() {
       let self = this;
       this.nonFieldErrors = [];
@@ -65,7 +66,7 @@ export default {
         /* eslint-disable */
         res => {
           if(this.isLoggedIn === true){
-            alert("ok");
+            this.getUserInfo();
             self.$router.push("/mypage");
           }
         },

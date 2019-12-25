@@ -5,7 +5,7 @@
         <v-col align-self="start" class="pa-0" cols="12">
           <v-avatar class="profile" color="grey" size="164" tile>
             <v-img
-              src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
+              :src="'http://localhost:8000' + userInfo.image"
               style="border:solid 1px padding:10px margin:10px"
             ></v-img>
           </v-avatar>
@@ -13,7 +13,9 @@
         <v-col class="py-0">
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title class="title">Marcus Obrien</v-list-item-title>
+              <v-list-item-title class="title">{{
+                userInfo.username
+              }}</v-list-item-title>
               <v-list-item-subtitle>Network Engineer</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -53,25 +55,25 @@
     <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="500">
       <v-container class="pa-2" style="height: 1000px;">
         <v-row dense>
-          <v-col v-for="card in cards" :key="card.title" :cols="3">
+          <v-col v-for="prod in userProd" :key="prod.id" :cols="3">
             <v-card class="ma-3">
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title class="headline">{{
-                    card.title
+                  <v-list-item-title class="headline" size="10">{{
+                    prod.name
                   }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
 
               <v-img
-                :src="card.src"
+                :src="prod.image"
                 class="white--text align-end"
                 gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                 height="200px"
               >
               </v-img>
               <v-card-text>
-                dericious!
+                {{ prod.brief }}
               </v-card-text>
 
               <v-card-actions>
@@ -111,32 +113,35 @@ export default {
       prod: []
     },
     offsetTop: 0,
-    cards: [
-      {
-        title: "Orange",
-        src: "https://cdn.vuetifyjs.com/images/cards/road.jpg",
-        flex: 6
-      },
-      {
-        title: "Apple",
-        src: "https://cdn.vuetifyjs.com/images/cards/plane.jpg",
-        flex: 6
-      },
-      {
-        title: "Banana",
-        src: "https://cdn.vuetifyjs.com/images/cards/road.jpg",
-        flex: 6
-      },
-      {
-        title: "Mango",
-        src: "https://cdn.vuetifyjs.com/images/cards/plane.jpg",
-        flex: 6
-      }
-    ]
+    userProd: [],
+    nextUrl: null,
+    previousUrl: null
   }),
   created() {
     if (this.$store.getters.isLoggedIn === false) {
       document.location = "/login";
+    }
+    let self = this;
+    this.$store.dispatch("getUserProducts", this.userInfo.user_id).then(res => {
+      self.userProd = res.results;
+      self.nextUrl = res.next;
+      self.previousUrl = res.previous;
+    });
+  },
+  computed: {
+    userInfo() {
+      return this.$store.getters.userInfo;
+    },
+    newUserProd() {
+      return this.$store.getters.userProducts;
+    }
+  },
+  watch: {
+    // eslint-disable-next-line
+    newUserProd: function(newProd, oldProd) {
+      this.userProd = newProd.results;
+      this.nextURL = newProd.next;
+      this.previousUrl = newProd.previous;
     }
   },
   methods: {

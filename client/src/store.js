@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     isLoggedIn: false, //ログイン状態,
     products: null,
+    userProducts: null,
     prodCategory: [],
     reviews: [],
     setIsReviewCreated: [],
@@ -31,6 +32,9 @@ export default new Vuex.Store({
     },
     setProducts(state, payload) {
       state.products = payload;
+    },
+    setUserProducts(state, payload) {
+      state.userProducts = payload;
     },
     setProdCategory(state, payload) {
       state.prodCategory = payload;
@@ -106,6 +110,21 @@ export default new Vuex.Store({
           });
       });
     },
+    getUserInfo({ commit }) {
+      return new Promise((resolve, reject) => {
+        client.auth
+          .getUserInfo()
+          .then(res => {
+            commit("setUserInfo", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            commit("setUserInfo", []);
+            alert("会員情報取得失敗");
+            reject(err);
+          });
+      });
+    },
     getProducts({ commit }, pageNo) {
       return new Promise((resolve, reject) => {
         client.products
@@ -132,6 +151,21 @@ export default new Vuex.Store({
           .catch(err => {
             alert("プロダクト登録失敗");
             alert(err);
+            reject(err);
+          });
+      });
+    },
+    getUserProducts({ commit }, user_id) {
+      return new Promise((resolve, reject) => {
+        client.products
+          .findByUser(user_id)
+          .then(res => {
+            commit("setUserProducts", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            commit("setProducts", []);
+            alert("ユーザーのプロダクト取得失敗");
             reject(err);
           });
       });
@@ -217,6 +251,7 @@ export default new Vuex.Store({
     },
     userInfo: state => state.userInfo,
     products: state => state.products,
+    userProducts: state => state.userProducts,
     prodCategory: state => state.prodCategory,
     reviews: state => state.reviews
   }
