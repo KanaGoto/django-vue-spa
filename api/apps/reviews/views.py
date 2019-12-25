@@ -32,7 +32,7 @@ class ReviewsListCreate(generics.ListCreateAPIView):
 
      @transaction.atomic
      def post(self, request, format=None):
-          serializer = ReviewsSerializer(data=request.data)
+          serializer = ReviewsPostSerializer(data=request.data)
           print (request.data)
           if serializer.is_valid():
                serializer.save()

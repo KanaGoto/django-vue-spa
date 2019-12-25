@@ -41,7 +41,12 @@
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
+                <v-icon
+                  v-bind:color="
+                    favorite_id.indexOf(prod.id) >= 0 ? 'red lighten-2' : ''
+                  "
+                  >mdi-heart</v-icon
+                >
               </v-btn>
               <v-btn icon>
                 <v-icon>mdi-share-variant</v-icon>
@@ -66,6 +71,8 @@ export default {
       products: [],
       nextURL: null,
       previousUrl: null,
+      favorites: [],
+      favorite_id: [],
       pageNo: 1,
       offsetTop: 0,
       dialogs: {
@@ -82,6 +89,18 @@ export default {
         self.products = data.results;
         self.nextURL = data.next;
         self.previousUrl = data.previous;
+      })
+      .catch(function(err) {
+        alert(err);
+      });
+    this.$store
+      .dispatch("getUserFavorites", 1)
+      .then(function(data) {
+        self.favorites = data.results;
+        //idだけのリスト作成
+        data.results.forEach(item => {
+          self.favorite_id.push(item.item.id);
+        });
       })
       .catch(function(err) {
         alert(err);

@@ -10,6 +10,7 @@ export default new Vuex.Store({
     products: null,
     userProducts: null,
     prodCategory: [],
+    favorites: [],
     reviews: [],
     setIsReviewCreated: [],
     hedgehogs: [],
@@ -38,6 +39,9 @@ export default new Vuex.Store({
     },
     setProdCategory(state, payload) {
       state.prodCategory = payload;
+    },
+    setUserFavorites(state, payload) {
+      state.favorites = payload;
     },
     setReviews(state, payload) {
       state.reviews = payload;
@@ -184,6 +188,21 @@ export default new Vuex.Store({
           });
       });
     },
+    getUserFavorites({ commit }, user_id) {
+      return new Promise((resolve, reject) => {
+        client.favorites
+          .findByUser(user_id)
+          .then(res => {
+            commit("setUserFavorites", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            commit("setUserFavorites", []);
+            alert("ユーザーのお気に入りリスト取得失敗");
+            reject(err);
+          });
+      });
+    },
     createReview({ commit }, [star, title, comment, prod, user]) {
       return (
         client.reviews
@@ -243,16 +262,11 @@ export default new Vuex.Store({
     isAuthenticated(state) {
       return state.user !== null && state.user !== undefined;
     },
-    doUpdate({ commit }, message) {
-      commit("setMessage", { message });
-    },
-    getMessage(state) {
-      return state.message;
-    },
     userInfo: state => state.userInfo,
     products: state => state.products,
     userProducts: state => state.userProducts,
     prodCategory: state => state.prodCategory,
-    reviews: state => state.reviews
+    reviews: state => state.reviews,
+    favorites: state => state.favorites
   }
 });

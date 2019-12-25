@@ -12,7 +12,7 @@ class ReviewsSerializer(serializers.ModelSerializer):
         model = Reviews
         fields = "__all__"
 
-class CartPostSerializer(serializers.ModelSerializer):
+class ReviewsPostSerializer(serializers.ModelSerializer):
     prod = serializers.PrimaryKeyRelatedField(queryset=Products.objects.all(),write_only=True)
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),write_only=True)
     class Meta:

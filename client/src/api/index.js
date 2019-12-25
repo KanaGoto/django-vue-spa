@@ -5,6 +5,7 @@ import questions from "./questions";
 import products from "./products";
 import reviews from "./reviews";
 import shopping from "./shopping";
+import favorites from "./favorites";
 
 const client = axios.create({
   baseURL: "http://localhost:8000/"
@@ -14,6 +15,7 @@ const client = axios.create({
 client.auth = auth(client);
 client.questions = questions(client);
 client.products = products(client);
+client.favorites = favorites(client);
 client.reviews = reviews(client);
 client.shopping = shopping(client);
 
