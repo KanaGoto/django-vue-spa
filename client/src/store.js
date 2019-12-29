@@ -203,6 +203,34 @@ export default new Vuex.Store({
           });
       });
     },
+    // eslint-disable-next-line
+    addUserFavorites({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        client.favorites
+          .add(data)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("お気に入り追加失敗");
+            reject(err);
+          });
+      });
+    },
+    // eslint-disable-next-line
+      deleteUserFavorites({ commit }, id) {
+      return new Promise((resolve, reject) => {
+        client.favorites
+          .delete(id)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("お気に入り削除失敗");
+            reject(err);
+          });
+      });
+    },
     createReview({ commit }, [star, title, comment, prod, user]) {
       return (
         client.reviews

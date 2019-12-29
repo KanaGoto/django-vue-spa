@@ -43,8 +43,11 @@
               <v-btn icon>
                 <v-icon
                   v-bind:color="
-                    favorite_id.indexOf(prod.id) >= 0 ? 'red lighten-2' : ''
+                    favorite_id.indexOf(prod.id) >= 0 && isLoggedIn
+                      ? 'red lighten-2'
+                      : ''
                   "
+                  @click="changeFavorite(prod.id)"
                   >mdi-heart</v-icon
                 >
               </v-btn>
@@ -93,25 +96,33 @@ export default {
       .catch(function(err) {
         alert(err);
       });
-    this.$store
-      .dispatch("getUserFavorites", 1)
-      .then(function(data) {
-        self.favorites = data.results;
-        //idだけのリスト作成
-        data.results.forEach(item => {
-          self.favorite_id.push(item.item.id);
+    if (this.isLoggedIn) {
+      this.$store
+        .dispatch("getUserFavorites", this.userInfo.user_id)
+        .then(function(data) {
+          self.favorites = data.results;
+          //idだけのリスト作成
+          data.results.forEach(item => {
+            self.favorite_id.push(item.item.id);
+          });
+        })
+        .catch(function(err) {
+          alert(err);
         });
-      })
-      .catch(function(err) {
-        alert(err);
-      });
+    }
   },
   computed: {
+    userInfo() {
+      return this.$store.getters.userInfo;
+    },
     newProducts() {
       return this.$store.getters.products;
     },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
+    },
+    userFavorites() {
+      return this.$store.getters.favorites;
     },
     nextPageIsNull() {
       if (this.nextURL === null) {
@@ -148,6 +159,49 @@ export default {
     openModal(prod) {
       this.dialogs.dialog = true;
       this.dialogs.prod = prod;
+    },
+    changeFavorite(prod_id) {
+      if (!this.isLoggedIn) {
+        return "";
+      }
+      let self = this;
+      let data = new FormData();
+      data.append("item", prod_id);
+      data.append("user", this.userInfo.user_id);
+      if (this.favorite_id.indexOf(prod_id) < 0) {
+        self.$store.dispatch("addUserFavorites", data).then(function() {
+          self.$store
+            .dispatch("getUserFavorites", self.userInfo.user_id)
+            .then(function(data) {
+              self.favorites = data.results;
+              self.favorite_id = [];
+              //idだけのリスト作成
+              data.results.forEach(item => {
+                self.favorite_id.push(item.item.id);
+              });
+            });
+        });
+      } else {
+        this.favorites.forEach(item => {
+          if (item.item.id === prod_id) {
+            alert("以下を消します" + item.id);
+            self.$store
+              .dispatch("deleteUserFavorites", item.id)
+              .then(function() {
+                self.$store
+                  .dispatch("getUserFavorites", self.userInfo.user_id)
+                  .then(function(data) {
+                    self.favorites = data.results;
+                    //idだけのリスト作成
+                    self.favorite_id = [];
+                    data.results.forEach(item => {
+                      self.favorite_id.push(item.item.id);
+                    });
+                  });
+              });
+          }
+        });
+      }
     }
   }
 };

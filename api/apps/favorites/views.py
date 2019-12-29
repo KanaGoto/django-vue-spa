@@ -38,7 +38,6 @@ class FavoritesListCreate(generics.ListCreateAPIView):
           return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class FavoritesDestroy(generics.DestroyAPIView):
      permission_classes = (permissions.AllowAny,)
      queryset = Favorite.objects.all()

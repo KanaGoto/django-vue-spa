@@ -66,8 +66,12 @@ export default {
         /* eslint-disable */
         res => {
           if(this.isLoggedIn === true){
-            this.getUserInfo();
+            //ユーザー情報取得
+            this.getUserInfo().then(function(){
+            //お気に入り商品名リスト取得
+            self.$store.dispatch("getUserFavorites", self.$store.getters.userInfo.user_id);
             self.$router.push("/mypage");
+            })
           }
         },
         err => {
