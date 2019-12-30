@@ -61,7 +61,6 @@ class CartsListCreate(generics.ListCreateAPIView):
           return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class CartsUpdate(generics.UpdateAPIView):
      permission_classes = (permissions.AllowAny,)
      queryset = Cart.objects.all()

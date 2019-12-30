@@ -69,7 +69,6 @@
 </template>
 <script>
 import Dialog from "./ProdDialog.vue";
-import { mapActions } from "vuex";
 export default {
   components: {
     appDialog: Dialog
@@ -81,6 +80,8 @@ export default {
       previousUrl: null,
       favorites: [],
       favorite_id: [],
+      cartItems: [],
+      cartItems_id: [],
       pageNo: 1,
       offsetTop: 0,
       dialogs: {
@@ -118,12 +119,11 @@ export default {
       this.$store
         .dispatch("getCartItems", this.userInfo.user_id)
         .then(function(data) {
+          self.cartItems = data;
           //idだけのリスト作成
-          let arr = [];
           data.forEach(item => {
-            arr.push(item.item.id);
+            self.cartItems_id.push(item.item.id);
           });
-          self.setCartItems_id(arr);
         });
     }
   },
@@ -133,9 +133,6 @@ export default {
     },
     newProducts() {
       return this.$store.getters.products;
-    },
-    cartItems_id() {
-      return this.$store.getters.cartItems_id;
     },
     newCartItems() {
       return this.$store.getters.cartItems;
@@ -167,8 +164,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["setCartItems_id"]),
-    ...mapActions(["setFavorites_id"]),
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;
     },
@@ -198,20 +193,18 @@ export default {
           self.$store
             .dispatch("getCartItems", self.userInfo.user_id)
             .then(function(data) {
-              self.setCartItems_id([]);
+              self.cartItems = data;
+              self.cartItems_id = [];
               //idだけのリスト作成
-              let arr = [];
               data.forEach(item => {
-                arr.push(item.item.id);
-                alert("カートに商品を追加しました！ 商品名:" + item.item.name);
+                self.cartItems_id.push(item.item.id);
               });
-              self.setCartItems_id(arr);
             });
         });
       } else {
         //既に追加されている場合は個数を更新
-        this.newCartItems.forEach(item => {
-          if (item.item.id == prod_id) {
+        this.cartItems.forEach(item => {
+          if (item.item.id === prod_id) {
             if (item.amount == 10) {
               alert("一度に購入できる同一商品は、１０個までです。");
               return null;
@@ -223,13 +216,12 @@ export default {
                 self.$store
                   .dispatch("getCartItems", self.userInfo.user_id)
                   .then(function(data) {
+                    self.cartItems = data;
                     //idだけのリスト作成
-                    self.setCartItems_id([]);
-                    let arr = [];
+                    self.cartItems_id = [];
                     data.forEach(item => {
-                      arr.push(item.item.id);
+                      self.cartItems_id.push(item.item.id);
                     });
-                    self.setCartItems_id(arr);
                   });
                 alert("カートに商品を追加しました！ 商品名:" + item.item.name);
               });

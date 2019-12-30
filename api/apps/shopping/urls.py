@@ -6,9 +6,6 @@ from .views import *
 urlpatterns = [
     url(r'^orders/$', OrdersList.as_view()),
     url(r'^cart/$', CartsListCreate.as_view()),
-    #path('detail/<str:pk>/', OrdersRetrieveView.as_view()),
-    #url(r'^/$', AuthInfoGetView.as_view()),
-    #url(r'^carts/$', CartListCreateView.as_view()),
-    #url(r'^carts/update/$', CartUpdateView.as_view()),
-    #url(r'^carts/delete/$', CartDeleteView.as_view()),
+    path('cart/update/<str:pk>/', CartsUpdate.as_view()),
+    path('cart/delete/<str:pk>/', CartsDestroy.as_view()),    
 ]

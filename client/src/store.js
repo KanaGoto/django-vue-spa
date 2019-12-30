@@ -11,6 +11,9 @@ export default new Vuex.Store({
     userProducts: null,
     prodCategory: [],
     favorites: [],
+    cartItems: [],
+    cartItems_id: [],
+    favorites_id: [],
     reviews: [],
     setIsReviewCreated: [],
     hedgehogs: [],
@@ -43,11 +46,11 @@ export default new Vuex.Store({
     setUserFavorites(state, payload) {
       state.favorites = payload;
     },
+    setCartItems(state, payload) {
+      state.cartItems = payload;
+    },
     setReviews(state, payload) {
       state.reviews = payload;
-    },
-    setHedgehogs(state, payload) {
-      state.hedgehogs = payload;
     },
     setUser(state, payload) {
       state.user = payload;
@@ -61,8 +64,11 @@ export default new Vuex.Store({
     setUserFavolites(state, payload) {
       state.userFavolites = payload;
     },
-    setMessage(state, payload) {
-      state.message = payload.message;
+    setCartItem_id(state, payload) {
+      state.cartItems_id = payload;
+    },
+    setFavorites_id(state, payload) {
+      state.favorites_id = payload;
     }
   },
   actions: {
@@ -231,6 +237,64 @@ export default new Vuex.Store({
           });
       });
     },
+    getCartItems({ commit }, user_id) {
+      return new Promise((resolve, reject) => {
+        client.shopping
+          .findByUser(user_id)
+          .then(res => {
+            commit("setCartItems", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            commit("setCartItems", []);
+            alert("カート投入アイテム取得失敗");
+            reject(err);
+          });
+      });
+    },
+    // eslint-disable-next-line
+    addCartItems({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        client.shopping
+          .add(data)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("カート投入失敗");
+            reject(err);
+          });
+      });
+    },
+    updateCartItems({ commit }, [id, amount]) {
+      return new Promise((resolve, reject) => {
+        client.shopping
+          .update(id, amount)
+          .then(res => {
+            commit("setCartItems", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            commit("setCartItems", []);
+            alert("カート投入アイテム更新失敗");
+            reject(err);
+          });
+      });
+    },
+    // eslint-disable-next-line
+    deleteCartItems({ commit }, id) {
+      return new Promise((resolve, reject) => {
+        client.shopping
+          .delete(id)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("カートアイテム削除失敗");
+            reject(err);
+          });
+      });
+    },
     createReview({ commit }, [star, title, comment, prod, user]) {
       return (
         client.reviews
@@ -261,29 +325,13 @@ export default new Vuex.Store({
             alert("レビュー一覧取得失敗");
           })
       );
+    },
+    setCartItems_id({ commit }, arr) {
+      commit("setCartItem_id", arr);
+    },
+    setFavorites_id({ commit }, arr) {
+      commit("setFavorites_id", arr);
     }
-    // userSignOut({ commit }) {
-    //   firebase
-    //     .auth()
-    //     .signOut()
-    //     .then(() => {
-    //       commit("setUser", null);
-    //       commit("setIsAuthenticated", false);
-    //       router.push("/");
-    //     })
-    //     .catch(() => {
-    //       commit("setUser", null);
-    //       commit("setIsAuthenticated", false);
-    //       router.push("/");
-    //     });
-    // },
-    // getUserFavolites({ state, commit }) {
-    //   return firebase
-    //     .database()
-    //     .ref("users/" + state.user.user.uid)
-    //     .once("value", snapshot => {
-    //       commit("setUserFavolites", snapshot.val());
-    //     });
   },
   getters: {
     isLoggedIn: state => state.isLoggedIn,
@@ -294,7 +342,10 @@ export default new Vuex.Store({
     products: state => state.products,
     userProducts: state => state.userProducts,
     prodCategory: state => state.prodCategory,
+    favorites: state => state.favorites,
+    cartItems: state => state.cartItems,
     reviews: state => state.reviews,
-    favorites: state => state.favorites
+    cartItems_id: state => state.cartItems_id,
+    favorites_id: state => state.favorites_id
   }
 });

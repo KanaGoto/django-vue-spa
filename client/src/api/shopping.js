@@ -1,10 +1,16 @@
 export default function(cli) {
   return {
-    findAll(pageNo) {
-      return cli.get(`products/?page=` + pageNo);
+    findByUser(user_id) {
+      return cli.get(`shopping/cart?user_id=${user_id}`);
     },
-    findById(id) {
-      return cli.post(`products/${id}/`);
+    add(data) {
+      return cli.post(`shopping/cart/`, data);
+    },
+    update(id, data) {
+      return cli.put(`shopping/cart/update/${id}/`, data);
+    },
+    delete(id) {
+      return cli.delete(`shopping/cart/delete/${id}/`);
     }
   };
 }
