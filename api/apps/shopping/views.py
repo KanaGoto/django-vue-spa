@@ -18,7 +18,22 @@ class OrderSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
-class OrdersList(generics.ListAPIView):
+class OrdersDetailListCreate(generics.ListCreateAPIView):
+     permission_classes = (permissions.AllowAny,)
+     queryset = OrderDetail.objects.all()
+     serializer_class = OrderDetailSerializer
+     
+     @transaction.atomic
+     def post(self, request, format=None):
+          serializer = OrderDetailPostSerializer(data=request.data)
+          print (request.data)
+          if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data, status=status.HTTP_201_CREATED)
+          return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrdersListCreate(generics.ListCreateAPIView):
      permission_classes = (permissions.AllowAny,)
      queryset = Order.objects.all()
      serializer_class = OrderSerializer
@@ -36,6 +51,15 @@ class OrdersList(generics.ListAPIView):
           if user_id is not None:
                queryset = queryset.filter(user__user_id=user_id)
           return queryset
+     
+     @transaction.atomic
+     def post(self, request, format=None):
+          serializer = OrderPostSerializer(data=request.data)
+          print (request.data)
+          if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data, status=status.HTTP_201_CREATED)
+          return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CartsListCreate(generics.ListCreateAPIView):

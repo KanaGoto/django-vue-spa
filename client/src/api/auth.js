@@ -16,6 +16,9 @@ export default function(cli) {
     },
     getUserInfo(){
       return cli.get("users/info/");
+    },
+    createAddress(data){
+      return cli.post("users/address/", data);
     }
   };
 }

@@ -8,6 +8,7 @@ import MyPage from "@/views/MyPage.vue";
 import ProductList from "@/views/ProductList.vue";
 import Product from "@/views/Product.vue";
 import ReviewCreate from "@/views/ReviewCreate.vue";
+import ConfirmPurchase from "@/views/ConfirmPurchase.vue";
 
 Vue.use(Router);
 
@@ -29,6 +30,11 @@ const router = new Router({
       path: "/mypage",
       name: "mypage",
       component: MyPage
+    },
+    {
+      path: "/purchase",
+      name: "confirmPurchase",
+      component: ConfirmPurchase
     },
     {
       path: "/products",

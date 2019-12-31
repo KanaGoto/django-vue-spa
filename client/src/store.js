@@ -6,7 +6,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    user: null,
+    userInfo: null,
     isLoggedIn: false, //ログイン状態,
+    addressInfo: null,
     products: null,
     userProducts: null,
     prodCategory: [],
@@ -14,11 +17,10 @@ export default new Vuex.Store({
     cartItems: [],
     cartItems_id: [],
     favorites_id: [],
+    orderList: [],
     reviews: [],
     setIsReviewCreated: [],
     hedgehogs: [],
-    user: null,
-    userInfo: null,
     isAuthenticated: false,
     userFavolites: [],
     message: "初期メッセージ"
@@ -34,6 +36,9 @@ export default new Vuex.Store({
       delete client.defaults.headers.common["Authorization"];
       localStorage.clear();
     },
+    setAddressInfo(state, payload) {
+      state.addressInfo = payload;
+    },
     setProducts(state, payload) {
       state.products = payload;
     },
@@ -48,6 +53,9 @@ export default new Vuex.Store({
     },
     setCartItems(state, payload) {
       state.cartItems = payload;
+    },
+    setOrderList(state, payload) {
+      state.orderList = payload;
     },
     setReviews(state, payload) {
       state.reviews = payload;
@@ -131,6 +139,35 @@ export default new Vuex.Store({
           .catch(err => {
             commit("setUserInfo", []);
             alert("会員情報取得失敗");
+            reject(err);
+          });
+      });
+    },
+    getAddress({ commit }, user_id) {
+      return new Promise((resolve, reject) => {
+        client.auth
+          .getAddress(user_id)
+          .then(res => {
+            commit("setAddressInfo", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            commit("setAddressInfo", []);
+            alert("住所取得失敗");
+            reject(err);
+          });
+      });
+    },
+    // eslint-disable-next-line
+    createAddress({ commit }, addressInfo) {
+      return new Promise((resolve, reject) => {
+        client.auth
+          .createAddress(addressInfo)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("住所登録失敗");
             reject(err);
           });
       });
@@ -295,6 +332,49 @@ export default new Vuex.Store({
           });
       });
     },
+    getOrderList({ commit }, user_id) {
+      return new Promise((resolve, reject) => {
+        client.shopping
+          .orderList(user_id)
+          .then(res => {
+            commit("setOrderList", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            commit("setOrderList", []);
+            alert("購入履歴取得失敗");
+            reject(err);
+          });
+      });
+    },
+    // eslint-disable-next-line
+    createOrder({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        client.shopping
+          .createOrder(data)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("購入履歴作成失敗");
+            reject(err);
+          });
+      });
+    },
+    // eslint-disable-next-line
+      createOrderDetail({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        client.shopping
+          .createOrderDetail(data)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("購入履歴詳細作成失敗");
+            reject(err);
+          });
+      });
+    },
     createReview({ commit }, [star, title, comment, prod, user]) {
       return (
         client.reviews
@@ -339,6 +419,7 @@ export default new Vuex.Store({
       return state.user !== null && state.user !== undefined;
     },
     userInfo: state => state.userInfo,
+    addressInfo: state => state.addressInfo,
     products: state => state.products,
     userProducts: state => state.userProducts,
     prodCategory: state => state.prodCategory,
@@ -346,6 +427,7 @@ export default new Vuex.Store({
     cartItems: state => state.cartItems,
     reviews: state => state.reviews,
     cartItems_id: state => state.cartItems_id,
-    favorites_id: state => state.favorites_id
+    favorites_id: state => state.favorites_id,
+    orderList: state => state.orderList
   }
 });

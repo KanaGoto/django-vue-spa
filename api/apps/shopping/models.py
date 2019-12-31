@@ -42,8 +42,14 @@ class Order(models.Model):
     """
     注文履歴
     """
+    PAYMENT_CHOICES = (("0", "代引き"), ("1", "PayPay"), ("2", "LinePay"), ("3", "VISA"))
+    DELIVERYTIME_CHOICES = (("0", "最短"), ("1", "午前中"), ("2", "12:00 ~ 14:00"), ("3", "14:00 ~ 17:00"), ("4", "17:00 ~ 19:00"))
+
     user = models.ForeignKey(User, verbose_name="顧客", related_name="orders", on_delete=models.CASCADE)
     order_detail = models.ManyToManyField(OrderDetail, verbose_name="注文履歴", related_name="ordered_items")
+    payment = models.CharField(choices = PAYMENT_CHOICES,default="0", max_length=1, verbose_name="支払い方法")
+    delivery_date = models.CharField(default="", max_length=10, verbose_name="お届け日")
+    delivery_time = models.CharField(choices = DELIVERYTIME_CHOICES, default="0", max_length=1, verbose_name="お届け時間帯")
     total_price = models.IntegerField(default=0, verbose_name="合計金額")
     add_time = models.DateTimeField(auto_now_add=True)
 

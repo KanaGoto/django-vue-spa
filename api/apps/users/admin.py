@@ -6,7 +6,7 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ['username']
 
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ['user','first_name','last_name', 'street_address1', 'street_address2', 'city', 'state']
+    list_display = ['id','user','first_name','last_name', 'street_address1', 'street_address2', 'city', 'state']
     search_fields = ['user']
 
 #admin.site.register(VerifyCode, VerifyCodeAdmin)

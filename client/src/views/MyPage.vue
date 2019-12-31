@@ -79,6 +79,7 @@
             outlined
             color="primary"
             :disabled="cartItems.length < 1 ? true : false"
+            @click="purchase"
           >
             purchase
           </v-btn>
@@ -156,6 +157,9 @@ export default {
         self.$store.dispatch("getCartItems", self.userInfo.user_id).then(function(){
         });
       });
+    },
+    purchase(){
+      this.$router.push("/purchase");
     }
   },
   //  watch: {
