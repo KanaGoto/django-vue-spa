@@ -5,10 +5,8 @@ import store from "@/store.js";
 import Register from "@/views/Register.vue";
 import Login from "@/views/Login.vue";
 import MyPage from "@/views/MyPage.vue";
-import ProductList from "@/views/ProductList.vue";
-import Product from "@/views/Product.vue";
-import ReviewCreate from "@/views/ReviewCreate.vue";
 import ConfirmPurchase from "@/views/ConfirmPurchase.vue";
+import History from "@/views/History.vue";
 
 Vue.use(Router);
 
@@ -37,31 +35,14 @@ const router = new Router({
       component: ConfirmPurchase
     },
     {
-      path: "/products",
-      name: "product-list",
-      component: ProductList
-    },
-    {
-      path: "/product/:id",
-      name: "product",
-      component: Product,
-      props: route => ({ id: Number(route.params.id) }),
-      children: [
-        {
-          path: "/review", //親ルートと被らないパラメータを指定
-          name: "reviews-create",
-          props: route => ({ id: Number(route.params.id) }),
-          component: ReviewCreate
-        }
-      ]
+      path: "/orders",
+      name: "history",
+      component: History
     },
     {
       path: "/about",
       name: "about",
       component: () => import("./views/About.vue")
-      // meta: {
-      //   authRequired: true
-      // }
     },
     {
       path: "/menu",

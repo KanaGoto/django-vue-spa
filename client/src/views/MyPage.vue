@@ -3,7 +3,10 @@
     <v-card>
       <v-row justify="center" align="center">
         <v-toolbar color="cyan" dark flat justify="center" align="center">
-          <v-app-bar-nav-icon></v-app-bar-nav-icon>
+          <v-app-bar-nav-icon
+            @click.stop="drawer = !drawer"
+          ></v-app-bar-nav-icon>
+
           <v-toolbar-title>Your Dashboard</v-toolbar-title>
           <v-spacer></v-spacer>
 
@@ -11,7 +14,7 @@
             <v-icon>mdi-heart</v-icon>
           </v-btn>
           <v-btn icon>
-            <v-icon @click.stop="drawer = !drawer">mdi-cart</v-icon>
+            <v-icon @click.stop="cartdrawer = !cartdrawer">mdi-cart</v-icon>
           </v-btn>
           <v-tabs
             slot="extension"
@@ -24,8 +27,9 @@
         </v-toolbar>
       </v-row>
 
+      <!-- カート -->
       <v-navigation-drawer
-        v-model="drawer"
+        v-model="cartdrawer"
         absolute
         temporary
         right
@@ -85,6 +89,67 @@
           </v-btn>
         </div>
       </v-navigation-drawer>
+
+      <!-- setting -->
+      <v-navigation-drawer
+        v-model="drawer"
+        absolute
+        temporary
+        width="400"
+        height="1000px"
+      >
+        <div v-if="isLoggedIn">
+          <v-list-item>
+            <v-list-item-avatar color="white" size="100px">
+              <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title class="title">
+                {{ userInfo.username }}
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                <div v-if="isLoggedIn">
+                  Logged In
+                </div>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </div>
+        <div v-else>
+          <v-list-item>
+            <v-list-item-avatar color="blue" size="100px"> </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title class="title">
+                unknown user
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                <div v-if="isLoggedIn">
+                  Logged In
+                </div>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </div>
+
+        <v-divider></v-divider>
+
+        <v-list dense nav>
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            link
+            :to="item.link"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
     </v-card>
 
     <v-tabs-items v-model="tabs">
@@ -115,14 +180,26 @@ export default {
   },
   data() {
     return {
+      items: [
+        { title: "My Account", icon: "mdi-image", link: "account" },
+        {
+          title: "Order History",
+          icon: "mdi-view-dashboard",
+          link: "orders"
+        },
+        { title: "About", icon: "mdi-help-box", link: "about" }
+      ],
       titles: ["home", "following", "profile"],
       tabs: null,
       drawer: null,
-      count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      isLoggedIn: ""
+      cartdrawer: null,
+      count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     };
   },
   computed: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
     userInfo() {
       return this.$store.getters.userInfo;
     },
@@ -160,6 +237,12 @@ export default {
     },
     purchase(){
       this.$router.push("/purchase");
+    },
+    goHistory(){
+      alert("ok");
+    },
+    go(){
+      alert("ok");
     }
   },
   //  watch: {

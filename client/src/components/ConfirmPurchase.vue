@@ -201,12 +201,15 @@ export default {
     };
   },
   created() {
+    let self = this;
+    //ユーザー情報を取得
+    self.getUserInfo();
     //①合計金額算出
     let total = "";
-    this.cartItems.forEach(item => {
+    self.cartItems.forEach(item => {
       total += item.item.shop_price * item.amount;
     });
-    this.orderInfo.totalPrice = total;
+    self.orderInfo.totalPrice = total;
 
     //②お届け日の設定 ※本来はサーバー側で取得
     var now = new Date();
@@ -223,33 +226,34 @@ export default {
         d = "0" + d;
       }
       //リストに追加
-      this.dateList.push(y + "/" + m + "/" + d);
+      self.dateList.push(y + "/" + m + "/" + d);
       now.setDate(now.getDate() + 1);
     }
 
-    //③アドレス新規追加チェックボックス初期値
-    if (this.addressList.length < 1) {
-      this.newAddress = true;
+    if (self.userInfo.address.length > 0) {
+      //④以下アドレスがある場合
+      self.userInfo.address.forEach(item => {
+        self.addressList.push({
+          value: item.id,
+          label:
+            item.last_name +
+            item.first_name +
+            "　〒" +
+            item.zip +
+            " " +
+            item.state +
+            item.city +
+            item.street_address1 +
+            (item.street_address2 ? item.street_address2 : "")
+        });
+      });
+      //住所の初期値
+      self.orderInfo.address = self.addressList[0].value;
+    } else {
+      //③アドレス新規追加チェックボックス初期値
+      self.newAddress = true;
       return "";
     }
-    //④以下アドレスがある場合のみ
-    this.userInfo.address.forEach(item => {
-      this.addressList.push({
-        value: item.id,
-        label:
-          item.last_name +
-          item.first_name +
-          "　〒" +
-          item.zip +
-          " " +
-          item.state +
-          item.city +
-          item.street_address1 +
-          (item.street_address2 ? item.street_address2 : "")
-      });
-    });
-    //住所の初期値
-    this.orderInfo.address = this.addressList[0].value;
   },
   computed: {
     isLoggedIn() {
@@ -269,6 +273,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["getUserInfo"]),
     ...mapActions(["getOrderList"]),
     ...mapActions(["createOrder"]),
     ...mapActions(["createOrderDetail"]),
@@ -348,7 +353,39 @@ export default {
               });
           });
       } else {
-        //aaa
+        //既存の住所で購入
+        //注文履歴（詳細）登録
+        self.createOrderDetailPre();
+        self.sleep(1);
+        //注文履歴登録
+        let orderData = new FormData();
+        orderData.append("user", self.userInfo.user_id);
+        orderData.append("deliverydate", self.orderInfo.deliverydate);
+        orderData.append("deliverytime", self.orderInfo.deliverytime);
+        orderData.append("payment", self.orderInfo.payment);
+        orderData.append("totalPrice", Number(self.orderInfo.totalPrice));
+        orderData.append("address", self.orderInfo.address);
+        for (var i = 0; i < self.orderInfo.orderDetail.length; i++) {
+          orderData.append("order_detail[]", self.orderInfo.orderDetail[i]);
+        }
+        //注文履歴作成API
+        self
+          .createOrder(orderData)
+          .then(function() {
+            return new Promise(function(res) {
+              //カートアイテム削除API
+              self.cartItems.forEach(item => {
+                self.deleteCartItems(item.id);
+              });
+              res();
+            });
+          })
+          .then(function() {
+            self.getCartItems(self.userInfo.user_id).then(function() {
+              alert("商品購入完了しました!");
+              self.$router.push("/mypage");
+            });
+          });
       }
     },
     createOrderDetailPre() {
@@ -374,6 +411,7 @@ export default {
               })
               .then(function() {
                 // resolveを呼び出し
+                self.sleep(1);
                 resolve(i + 1);
               });
           }).then(function(count) {
