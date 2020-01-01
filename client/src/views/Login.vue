@@ -61,6 +61,7 @@ export default {
     ...mapActions(["getUserInfo"]),
     ...mapActions(["getUserFavorites"]),
     ...mapActions(["getCartItems"]),
+    ...mapActions(["getOrderList"]),
     submit() {
       let self = this;
       this.nonFieldErrors = [];
@@ -74,6 +75,8 @@ export default {
             self.getUserFavorites(self.$store.getters.userInfo.user_id);
             //カートアイテム取得
             self.getCartItems(self.$store.getters.userInfo.user_id);
+            //購入履歴取得
+            self.getOrderList(self.$store.getters.userInfo.user_id);
             self.$router.push("/mypage");
             })
           }
