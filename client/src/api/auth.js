@@ -8,14 +8,20 @@ export default function(cli) {
       };
       return cli.post("login/", data);
     },
+    logout(){
+      return cli.get("logout/");
+    },
     verify(token) {
       return cli.post("auth/verify/", { token });
+    },
+    getUserInfo(){
+      return cli.get("users/info/");
     },
     userRegister(userInfo){
       return cli.post("users/register/", userInfo);
     },
-    getUserInfo(){
-      return cli.get("users/info/");
+    userUpdate(userInfo){
+      return cli.put("users/update/", userInfo);
     },
     createAddress(data){
       return cli.post("users/address/", data);

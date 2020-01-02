@@ -46,12 +46,15 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    GENDER = (("0", "Female"), ("1", "Male"), ("2", "Secret"))
+    
     user_id     = models.AutoField(verbose_name="user_id", primary_key=True)
     username    = models.CharField(_('username'), max_length=30)
     first_name  = models.CharField(_('first name'), max_length=30, blank=True)
     last_name   = models.CharField(_('last name'), max_length=30, blank=True)
     email       = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     profile     = models.CharField(_('profile'), max_length=255, blank=True)
+    gender      = models.CharField(choices = GENDER, max_length=1, default = "2", blank=True)
     is_active   = models.BooleanField(default=True)
     is_staff    = models.BooleanField(default=False)
     is_admin    = models.BooleanField(default=False)

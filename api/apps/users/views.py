@@ -49,6 +49,7 @@ class AuthInfoGetView(generics.RetrieveAPIView):
             'email': request.user.email,
             'profile': request.user.profile,
             'image': pic,
+            'gender': request.user.gender,
             'address': address
             },
             status=status.HTTP_200_OK)
@@ -58,12 +59,12 @@ class AuthInfoUpdateView(generics.UpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     #permission_classes = (permissions.AllowAny,)
     serializer_class = AuthSerializer
-    lookup_field = 'email'
+    lookup_field = 'user_id'
     queryset = User.objects.all()
 
     def get_object(self):
         try:
-            instance = self.queryset.get(email=self.request.user)
+            instance = self.queryset.get(user_id=self.request.user.user_id)
             return instance
         except User.DoesNotExist:
             raise Http404

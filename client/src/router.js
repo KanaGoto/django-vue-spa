@@ -7,6 +7,7 @@ import Login from "@/views/Login.vue";
 import MyPage from "@/views/MyPage.vue";
 import ConfirmPurchase from "@/views/ConfirmPurchase.vue";
 import History from "@/views/History.vue";
+import MyAccount from "@/views/MyAccount.vue";
 
 Vue.use(Router);
 
@@ -38,6 +39,11 @@ const router = new Router({
       path: "/orders",
       name: "history",
       component: History
+    },
+    {
+      path: "/account",
+      name: "account",
+      component: MyAccount
     },
     {
       path: "/about",

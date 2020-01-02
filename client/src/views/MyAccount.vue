@@ -1,14 +1,14 @@
 <template>
   <span>
-    <about></about>
+    <my-account></my-account>
   </span>
 </template>
 
 <script>
-import About from "@/components/About";
+import MyAccount from "@/components/MyAccount";
 export default {
   components: {
-    About
+    MyAccount
   }
 };
 </script>

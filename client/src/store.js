@@ -95,7 +95,18 @@ export default new Vuex.Store({
       );
     },
     logout({ commit }) {
-      commit("loggedOut");
+      return (
+        client.auth
+          .logout()
+          .then(res => {
+            commit("loggedIn", false);
+            return res;
+          })
+          // eslint-disable-next-line
+        .catch(e => {
+            alert("ログアウト失敗");
+          })
+      );
     },
     tryLoggedIn({ commit }) {
       const token = localStorage.getItem("token");
@@ -139,6 +150,20 @@ export default new Vuex.Store({
           .catch(err => {
             commit("setUserInfo", []);
             alert("会員情報取得失敗");
+            reject(err);
+          });
+      });
+    },
+    userUpdate({ commit }, userInfo) {
+      return new Promise((resolve, reject) => {
+        client.auth
+          .userUpdate(userInfo)
+          .then(res => {
+            commit("setUserInfo", res.data);
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("会員情報更新失敗");
             reject(err);
           });
       });

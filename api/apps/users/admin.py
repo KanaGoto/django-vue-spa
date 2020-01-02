@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import User, Address
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['user_id', 'username']
+    list_display = ['user_id', 'username', 'gender']
     search_fields = ['username']
 
 class AddressAdmin(admin.ModelAdmin):

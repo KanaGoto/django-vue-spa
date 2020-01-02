@@ -19,13 +19,15 @@ from django.urls import path, re_path, include
 from django.views.static import serve
 from api.settings import MEDIA_ROOT
 from rest_framework.routers import DefaultRouter
-from rest_framework_jwt.views import obtain_jwt_token # 追加
+from rest_framework_jwt.views import obtain_jwt_token 
 from django.conf.urls import url
+from django.contrib.auth import views as auth_views#追加
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('xadmin/', xadmin.site.urls),
     url(r'^login/', obtain_jwt_token),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^users/', include('users.urls')),
     re_path(r'^products/', include('products.urls')),
     re_path(r'^shopping/', include('shopping.urls')),

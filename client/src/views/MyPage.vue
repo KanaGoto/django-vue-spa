@@ -108,9 +108,7 @@
                 {{ userInfo.username }}
               </v-list-item-title>
               <v-list-item-subtitle>
-                <div v-if="isLoggedIn">
-                  Logged In
-                </div>
+                Logged In
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -123,9 +121,8 @@
                 unknown user
               </v-list-item-title>
               <v-list-item-subtitle>
-                <div v-if="isLoggedIn">
-                  Logged In
-                </div>
+                <a href="/login">Login</a> / Not a member ?
+                <a href="/register">Join Here</a>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -133,22 +130,44 @@
 
         <v-divider></v-divider>
 
-        <v-list dense nav>
-          <v-list-item
-            v-for="item in items"
-            :key="item.title"
-            link
-            :to="item.link"
-          >
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
+        <!-- ログイン時 -->
+        <div v-if="isLoggedIn">
+          <v-list dense nav>
+            <v-list-item
+              v-for="item in items"
+              :key="item.title"
+              link
+              :to="item.link"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
 
-            <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
+              <v-list-item-content>
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
+        <!-- 未ログイン時 -->
+        <div v-else>
+          <v-list dense nav>
+            <v-list-item
+              v-for="item in offItems"
+              :key="item.title"
+              link
+              :to="item.link"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
       </v-navigation-drawer>
     </v-card>
 
@@ -181,12 +200,21 @@ export default {
   data() {
     return {
       items: [
-        { title: "My Account", icon: "mdi-image", link: "account" },
+        { title: "Products", icon: "mdi-image", link: "mypage" },
+        {
+          title: "My Account",
+          icon: "mdi-account-circle",
+          link: "account"
+        },
         {
           title: "Order History",
           icon: "mdi-view-dashboard",
           link: "orders"
         },
+        { title: "About", icon: "mdi-help-box", link: "about" }
+      ],
+      offItems: [
+        { title: "Products", icon: "mdi-image", link: "mypage" },
         { title: "About", icon: "mdi-help-box", link: "about" }
       ],
       titles: ["home", "following", "profile"],

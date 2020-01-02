@@ -23,16 +23,6 @@
             <v-btn
               :loading="loading3"
               :disabled="loading3"
-              color="green"
-              class="ma-2 white--text"
-              @click="openUserModal()"
-            >
-              Edit Profile
-              <v-icon right dark>mdi-account-circle</v-icon>
-            </v-btn>
-            <v-btn
-              :loading="loading3"
-              :disabled="loading3"
               color="blue-grey"
               class="ma-2 white--text"
               @click="openProdUploadModal()"
