@@ -2,6 +2,7 @@
   <div id="myAccount">
     <div class="members">
       <app-navbar>My Account</app-navbar>
+      <br />
       <v-alert :value="nonFieldErrors.length" type="error">
         <div v-for="error in nonFieldErrors" :key="error">
           <h5>
@@ -10,6 +11,16 @@
         </div>
       </v-alert>
       <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+        <p>
+          <img v-if="uploadImageUrl" :src="uploadImageUrl" width="100" />
+          <v-file-input
+            accept="image/*"
+            show-size
+            label="image"
+            prepend-icon="mdi-image"
+            @change="onImagePicked"
+          ></v-file-input>
+        </p>
         <p>
           <v-text-field
             v-model="newUserInfo.username"
@@ -42,7 +53,6 @@
           <v-textarea
             v-model="newUserInfo.profile"
             label="Profile"
-            :rules="profileRules"
             rows="3"
           ></v-textarea>
         </p>
@@ -85,14 +95,12 @@ export default {
         v => !!v || "E-mail is required",
         v => /.+@.+\..+/.test(v) || "E-mail must be valid"
       ],
-      profileRules: [
-        v =>
-          (v && v.length <= 1000) || "Profile must be less than 1000 characters"
-      ],
+      uploadImageUrl: "",
       gender: gender,
       lazy: false,
       newUserInfo: {
         username: null,
+        image: null,
         email: null,
         gender: null,
         profile: null
@@ -100,13 +108,7 @@ export default {
     };
   },
   created() {
-    let self = this;
-    this.getUserInfo().then(function(res) {
-      self.newUserInfo.username = res.username;
-      self.newUserInfo.email = res.email;
-      self.newUserInfo.gender = res.gender;
-      self.newUserInfo.profile = res.profile;
-    });
+    this.reSetUserData();
   },
   computed: {
     isLoggedIn() {
@@ -117,6 +119,7 @@ export default {
     },
     isEdited() {
       if (
+        this.newUserInfo.image !== this.userInfo.image ||
         this.newUserInfo.username !== this.userInfo.username ||
         this.newUserInfo.email !== this.userInfo.email ||
         this.newUserInfo.gender !== this.userInfo.gender ||
@@ -154,7 +157,9 @@ export default {
       data.append("username", this.newUserInfo.username);
       data.append("email", this.newUserInfo.email);
       data.append("is_active", true);
-    
+      if(this.newUserInfo.image !== this.userInfo.image){
+        data.append('image', this.newUserInfo.image);
+      }
       if(this.newUserInfo.gender !== this.userInfo.gender){
         data.append("gender", this.newUserInfo.gender);
       }
@@ -174,15 +179,40 @@ export default {
       resetValidation () {
         this.$refs.form.resetValidation()
       },
+      reSetUserData(){
+        let self = this;
+        this.getUserInfo().then(function(res) {
+          self.newUserInfo.username = res.username;
+          self.newUserInfo.image = res.image;
+          if (res.image != "") {
+            self.uploadImageUrl = "http://localhost:8000" + res.image;
+          }
+          self.newUserInfo.email = res.email;
+          self.newUserInfo.gender = res.gender;
+          self.newUserInfo.profile = res.profile;
+        });
+      },
       afterUpdate(){
-        self = this;
-        this.getUserInfo().then(function(){
-          self.login([this.userInfo.email, this.userInfo.password])
-        })
+        this.reSetUserData();
       },
       getApiError(obj){
         return Object.keys(obj).map(function (key) { return obj[key][0]; })
+      },
+      onImagePicked(file) {
+      if (file !== undefined && file !== null) {
+          if (file.name.lastIndexOf('.') <= 0) {
+            return
+          }
+          this.newUserInfo.image = file;
+          const fr = new FileReader()
+          fr.readAsDataURL(file)
+          fr.addEventListener('load', () => {
+            this.uploadImageUrl = fr.result
+          })
+      } else {
+        this.uploadImageUrl = ''
       }
+    }
   }
 };
 </script>

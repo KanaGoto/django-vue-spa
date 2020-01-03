@@ -21,7 +21,11 @@ export default function(cli) {
       return cli.post("users/register/", userInfo);
     },
     userUpdate(userInfo){
-      return cli.put("users/update/", userInfo);
+      return cli.put("users/update/", userInfo, {
+        headers: {
+          "content-type": "multipart/form-data"
+        }
+      });
     },
     createAddress(data){
       return cli.post("users/address/", data);

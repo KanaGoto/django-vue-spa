@@ -199,15 +199,7 @@ export default {
         reader.onerror = error => reject(error)
       })
     },
-    inputFile: function(e) {
-      let self = this;
-      reader.onload = e => {
-        self.uploadImageUrl = e.target.result;
-      };
-      reader.readAsDataURL(e);
-      self.prodInfo.image = e;
-    },
-      onImagePicked(file) {
+    onImagePicked(file) {
         if (file !== undefined && file !== null) {
             if (file.name.lastIndexOf('.') <= 0) {
               return

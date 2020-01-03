@@ -58,7 +58,7 @@ class User(AbstractBaseUser):
     is_active   = models.BooleanField(default=True)
     is_staff    = models.BooleanField(default=False)
     is_admin    = models.BooleanField(default=False)
-    pic         = models.ImageField(_('pic'), max_length=200, upload_to="users/images/",
+    image       = models.ImageField(_('image'), max_length=200, upload_to="users/images/",
                                           null=True, blank=True)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     

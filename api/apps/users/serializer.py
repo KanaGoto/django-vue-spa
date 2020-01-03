@@ -44,7 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active',
             'is_staff',
             'is_admin',
-            'pic',
+            'image',
             'gender',
             'date_joined',
             'address', #モデルには存在しない追加する新フィールド

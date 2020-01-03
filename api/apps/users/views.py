@@ -39,16 +39,16 @@ class AuthInfoGetView(generics.RetrieveAPIView):
             address = []
 
         try:
-            pic = request.user.pic.url
+            image = request.user.image.url
         except:
-            pic = ""
+            image = ""
 
         return Response(data={
             'user_id': request.user.user_id,
             'username': request.user.username,
             'email': request.user.email,
             'profile': request.user.profile,
-            'image': pic,
+            'image': image,
             'gender': request.user.gender,
             'address': address
             },
