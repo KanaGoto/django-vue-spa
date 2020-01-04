@@ -13,7 +13,7 @@
         <p>
           <v-text-field
             v-model="prodInfo.name"
-            :counter="20"
+            :counter="30"
             :rules="nameRules"
             label="Name"
             required
@@ -48,7 +48,7 @@
         </p>
         <p>
           <v-text-field
-            v-model="prodInfo.sales_price"
+            v-model="prodInfo.shop_price"
             :rules="salesPriceRules"
             label="Sales Price"
             required
@@ -65,7 +65,7 @@
           <v-textarea
             v-model="prodInfo.brief"
             label="Description"
-            :counter="20"
+            :counter="1000"
             :rules="descriptionRules"
             required
             rows="5"
@@ -100,18 +100,18 @@ export default {
         category: null,
         products_num: null,
         market_price: null,
-        sales_price: null,
+        shop_price: null,
         brief: null,
         ship_free: false,
         image: null,
-        seller: 1
+        seller: null
       },
       nonFieldErrors: [],
       salesPriceRules: [v => !!v || "sales price is required"],
       passwordRules: [v => !!v || "password is required"],
       nameRules: [
         v => !!v || "Name is required",
-        v => (v && v.length <= 20) || "Name must be less than 10 characters"
+        v => (v && v.length <= 30) || "Name must be less than 30 characters"
       ],
       descriptionRules: [
         v => !!v || "Description is required",
@@ -130,6 +130,7 @@ export default {
     this.$store.dispatch("getCategory").then(res =>{
       self.categories = res;
     });
+    this.prodInfo.seller = this.userInfo.user_id;
   },
   computed:{
     userInfo() {
@@ -147,7 +148,7 @@ export default {
       data.append('category', this.prodInfo.category);
       data.append('products_num', this.prodInfo.products_num);
       data.append('market_price', this.prodInfo.market_price);
-      data.append('sales_price', this.prodInfo.sales_price);
+      data.append('shop_price', this.prodInfo.shop_price);
       data.append('ship_free', this.prodInfo.ship_free);
       data.append('brief', this.prodInfo.brief);
       data.append('image', this.prodInfo.image);
@@ -155,15 +156,16 @@ export default {
       this.createProduct(data).then(
         /* eslint-disable */
         res => {
-          this.$store.dispatch("getUserProducts", this.userInfo.user_id);
-          this.$store.dispatch("getProducts", 1);
+          alert(self.userInfo.user_id);
+          self.$store.dispatch("getUserProducts", self.userInfo.user_id);
+          //商品一覧取得
+          self.$store.dispatch("getProducts", 1);
           self.dialogs.dialog = false;
           self.clearProdInfo();
-          //self.$router.push("/mypage");
         },
         err => {
           alert(this.getApiError(err));
-          this.nonFieldErrors = this.getApiError(err);
+          self.nonFieldErrors = self.getApiError(err);
         }
       );
     },
@@ -183,7 +185,7 @@ export default {
         this.prodInfo.category = null;
         this.prodInfo.products_num = null;
         this.prodInfo.market_price = null;
-        this.prodInfo.sales_price = null;
+        this.prodInfo.shop_price = null;
         this.prodInfo.brief = null;
         this.prodInfo.ship_free = false;
         this.prodInfo.image = null;

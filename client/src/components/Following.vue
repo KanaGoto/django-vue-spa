@@ -1,25 +1,13 @@
 <template>
-  <div v-if="isLoggedIn">
-    <div>
-      <p>
-        Duis lobortis massa imperdiet quam. Donec vitae orci sed dolor rutrum
-        auctor. Vestibulum facilisis, purus nec pulvinar iaculis, ligula mi
-        congue nunc, vitae euismod ligula urna in dolor. Praesent congue erat at
-        massa.
-      </p>
-
-      <p>
-        Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu
-        sollicitudin urna dolor sagittis lacus. Pellentesque egestas, neque sit
-        amet convallis pulvinar, justo nulla eleifend augue, ac auctor orci leo
-        non est. Etiam sit amet orci eget eros faucibus tincidunt. Donec sodales
-        sagittis magna.
-      </p>
-    </div>
-  </div>
-
-  <div v-else>
-    not logged in!
+  <div class="mt-4 ml-4">
+    <v-badge>
+      <template v-slot:badge>
+        <span>2</span>
+      </template>
+      <v-icon>
+        shopping_cart
+      </v-icon>
+    </v-badge>
   </div>
 </template>
 
@@ -27,13 +15,9 @@
 export default {
   data() {
     return {
-      LoggedIn: false
+      messages: 0,
+      show: false
     };
-  },
-  created() {
-    if (this.$store.getters.isLoggedIn === false) {
-      document.location = "/login";
-    }
   }
 };
 </script>

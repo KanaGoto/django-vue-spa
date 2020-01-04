@@ -4,6 +4,7 @@ import Router from "vue-router";
 import store from "@/store.js";
 import Register from "@/views/Register.vue";
 import Login from "@/views/Login.vue";
+import Logout from "@/views/Logout.vue";
 import MyPage from "@/views/MyPage.vue";
 import ConfirmPurchase from "@/views/ConfirmPurchase.vue";
 import History from "@/views/History.vue";
@@ -24,6 +25,11 @@ const router = new Router({
       path: "/login",
       name: "login",
       component: Login
+    },
+    {
+      path: "/logout",
+      name: "logout",
+      component: Logout
     },
     {
       path: "/mypage",

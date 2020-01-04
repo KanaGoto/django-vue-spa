@@ -17,7 +17,6 @@
           </v-list-item-title>
           <v-list-item-subtitle>
             Logged In
-            <v-spacer></v-spacer> <a @click="onClick">logout</a>
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -56,7 +55,9 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <v-spacer></v-spacer>
     </div>
+
     <!-- 未ログイン時 -->
     <div v-else>
       <v-list dense nav>
@@ -110,7 +111,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["logout"]),
     ...mapActions(["getUserInfo"]),
     getColor() {
       let tmp = this.colors[this.colorCount].color;
@@ -126,16 +126,6 @@ export default {
       } else {
         return "";
       }
-    },
-    onClick() {
-      let self = this;
-      this.logout()
-        .then(function() {
-          self.getUserInfo();
-        })
-        .then(function() {
-          self.$router.push("/logout");
-        });
     }
   }
 };

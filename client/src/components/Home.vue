@@ -6,7 +6,7 @@
           <v-card class="ma-3">
             <v-list-item>
               <v-list-item-avatar color="white" size="40">
-                <v-img :src="prod.seller.pic"></v-img>
+                <v-img :src="prod.seller.image"></v-img>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title class="headline">{{

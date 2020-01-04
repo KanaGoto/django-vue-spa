@@ -7,7 +7,7 @@ class CartAdmin(admin.ModelAdmin):
     list_display = ["id","user", "item", "amount", "add_time"]
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ["id","user", "payment","delivery_date","delivery_time","_order_detail","total_price", "add_time"]
+    list_display = ["id","user", "payment","delivery_date","delivery_time","address","_order_detail","total_price", "add_time"]
 
     def _order_detail(self, row):
         return ','.join([x.item.name for x in row.order_detail.all()])

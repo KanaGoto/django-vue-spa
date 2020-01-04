@@ -2,20 +2,47 @@
   <div id="MyPage">
     <v-card>
       <v-row justify="center" align="center">
-        <v-toolbar color="cyan" dark flat justify="center" align="center">
+        <v-toolbar
+          color="teal lighten-1
+"
+          dark
+          flat
+          justify="center"
+          align="center"
+        >
           <v-app-bar-nav-icon
+            large
+            style="margin-left:15px"
             @click.stop="drawer = !drawer"
           ></v-app-bar-nav-icon>
-
-          <v-toolbar-title>Your Dashboard</v-toolbar-title>
+          <div class="logo">
+            <v-img
+              src="../static/organic.png"
+              width="300px"
+              height="80px"
+            ></v-img>
+          </div>
           <v-spacer></v-spacer>
-
-          <v-btn icon>
-            <v-icon>mdi-heart</v-icon>
-          </v-btn>
-          <v-btn icon>
-            <v-icon @click.stop="cartdrawer = !cartdrawer">mdi-cart</v-icon>
-          </v-btn>
+          <div v-if="isLoggedIn">
+            <v-btn text small @click="doLogout">
+              logout
+            </v-btn>
+          </div>
+          <div v-else>
+            <v-btn text small @click="doLogin">
+              login
+            </v-btn>
+          </div>
+          <div class="icon">
+            <v-badge overlap color="blue">
+              <template v-slot:badge>
+                <span>{{ cartItems.length }}</span>
+              </template>
+              <v-icon @click.stop="cartdrawer = !cartdrawer" large
+                >mdi-cart
+              </v-icon>
+            </v-badge>
+          </div>
           <v-tabs
             slot="extension"
             v-model="tabs"
@@ -241,6 +268,7 @@ export default {
   methods: {
     ...mapActions(["setCartItems_id"]),
     ...mapActions(["updateCartItems"]),
+    ...mapActions(["logout"]),
     changeAmount(id, amount) {
       let self = this;
       let data = new FormData();
@@ -266,20 +294,17 @@ export default {
     purchase(){
       this.$router.push("/purchase");
     },
-    goHistory(){
-      alert("ok");
+    doLogout(){
+      let self = this;
+      this.logout()
+        .then(function() {
+          self.$router.push("/logout");
+        });
     },
-    go(){
-      alert("ok");
+    doLogin(){
+      this.$router.push("/login");
     }
-  },
-  //  watch: {
-  //   cartItems: function(newItem) {
-  //     this.products = newProd.results;
-  //     this.nextURL = newProd.next;
-  //     this.previousUrl = newProd.previous;
-  //   }
-  // },
+  }
 };
 </script>
 <style scoped>
@@ -288,5 +313,12 @@ export default {
 }
 .cross{
   margin: 5px
+}
+.logo{
+  margin-top:40px;
+  padding:10px;
+}
+.icon{
+  margin-right:30px;
 }
 </style>

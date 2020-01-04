@@ -35,6 +35,7 @@ class OrderDetailPostSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     order_detail = OrderDetailSerializer(many=True,read_only=True)
     user = AuthSerializer(read_only=True)
+    address = AddressSerializer(read_only=True)
     class Meta:
         model = Order
         fields = "__all__"
@@ -42,6 +43,7 @@ class OrderSerializer(serializers.ModelSerializer):
 class OrderPostSerializer(serializers.ModelSerializer):
     order_detail = serializers.PrimaryKeyRelatedField(queryset=OrderDetail.objects.all(),write_only=True,many=True,)
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),write_only=True)
+    address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all(),write_only=True)
     class Meta:
         model = Order
         fields = "__all__"

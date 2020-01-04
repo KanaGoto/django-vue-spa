@@ -26,7 +26,7 @@
         </v-list-item-content>
       </v-list-item>
     </v-list>
-    <p class="submit">TOTAL PRICE : {{ orderInfo.totalPrice }}円</p>
+    <p class="submit">TOTAL PRICE : {{ orderInfo.total_price }}円</p>
 
     <v-divider></v-divider>
 
@@ -41,13 +41,16 @@
             item-text="label"
             item-value="value"
             :items="addressList"
-            :rules="[v => !!v || 'address is required']"
             required
           ></v-select>
         </div>
       </div>
       <!-- 新しいアドレス -->
-      <v-checkbox v-model="newAddress" label="New Address"></v-checkbox>
+      <v-checkbox
+        v-model="newAddress"
+        label="New Address"
+        :rules="this.addressIsNull ? newAddressRules : ''"
+      ></v-checkbox>
       <div v-if="newAddress">
         <v-text-field
           v-model="newAddressInfo.first_name"
@@ -90,7 +93,7 @@
           required
         ></v-text-field>
         <v-text-field
-          :rules="streetRules"
+          :rules="street1Rules"
           v-model="newAddressInfo.street_address1"
           label="Street_address1"
           placeholder="Snowy Rock Pl"
@@ -98,7 +101,7 @@
           required
         ></v-text-field>
         <v-text-field
-          :rules="streetRules"
+          :rules="street2Rules"
           v-model="newAddressInfo.street_address2"
           label="Street_address2"
           placeholder="East building 2F"
@@ -118,14 +121,14 @@
 
       <div class="delivery">
         <v-select
-          v-model="orderInfo.deliverydate"
+          v-model="orderInfo.delivery_date"
           :items="dateList"
           label="date"
           style="padding-right:60px;width:10px"
           required
         ></v-select>
         <v-select
-          v-model="orderInfo.deliverytime"
+          v-model="orderInfo.delivery_time"
           item-text="label"
           item-value="value"
           :items="timeList"
@@ -164,11 +167,15 @@ export default {
       ],
       stateRules: [v => !!v || "this field is required"],
       cityRules: [v => !!v || "this field is required"],
-      streetRules: [
+      street1Rules: [
         v => !!v || "This field is required",
         v =>
           (!!v && v.length <= 30) || "Address must be less than 30 characters"
       ],
+      street2Rules: [
+        v => v.length <= 30 || "Address must be less than 30 characters"
+      ],
+      newAddressRules: [v => !!v || "This field is required"],
       lazy: false,
       newAddress: false,
       addressList: [],
@@ -181,12 +188,12 @@ export default {
         { value: "4", label: "17:00 ~ 19:00" }
       ],
       orderInfo: {
-        totalPrice: null,
+        total_price: null,
         address: null,
         payment: "0",
-        deliverydate: "最短",
-        deliverytime: "0",
-        orderDetail: []
+        delivery_date: "最短",
+        delivery_time: "0",
+        order_detail: []
       },
       newAddressInfo: {
         first_name: null,
@@ -197,7 +204,8 @@ export default {
         street_address1: null,
         street_address2: null,
         phone: null
-      }
+      },
+      loopEnd: false
     };
   },
   created() {
@@ -205,11 +213,11 @@ export default {
     //ユーザー情報を取得
     self.getUserInfo();
     //①合計金額算出
-    let total = "";
+    let total = 0;
     self.cartItems.forEach(item => {
       total += item.item.shop_price * item.amount;
     });
-    self.orderInfo.totalPrice = total;
+    self.orderInfo.total_price = total;
 
     //②お届け日の設定 ※本来はサーバー側で取得
     var now = new Date();
@@ -318,59 +326,45 @@ export default {
           })
           .then(function() {
             //注文履歴（詳細）登録
-            self.createOrderDetailPre();
-          })
-          // eslint-disable-next-line
-          .then(function(res) {
-            //注文履歴登録
-            let orderData = new FormData();
-            orderData.append("user", self.userInfo.user_id);
-            orderData.append("deliverydate", self.orderInfo.deliverydate);
-            orderData.append("deliverytime", self.orderInfo.deliverytime);
-            orderData.append("payment", self.orderInfo.payment);
-            orderData.append("totalPrice", Number(self.orderInfo.totalPrice));
-            orderData.append("address", self.orderInfo.address);
-            for (var i = 0; i < self.orderInfo.orderDetail.length; i++) {
-              orderData.append("order_detail[]", self.orderInfo.orderDetail[i]);
-            }
-            //注文履歴作成API
-            self
-              .createOrder(orderData)
-              .then(function() {
-                return new Promise(function(res) {
-                  //カートアイテム削除API
-                  self.cartItems.forEach(item => {
-                    self.deleteCartItems(item.id);
+            // eslint-disable-next-line
+            self.createOrderDetailPre(self).then(function(arr){
+              //注文履歴登録
+              self.orderInfo.user = self.userInfo.user_id;
+              self.orderInfo.total_price = Number(self.orderInfo.total_price);
+              //注文履歴作成API
+              self
+                .createOrder(self.orderInfo)
+                .then(function() {
+                  return new Promise(function(res) {
+                    //カートアイテム削除API
+                    self.cartItems.forEach(item => {
+                      self.deleteCartItems(item.id);
+                    });
+                    res();
                   });
-                  res();
+                })
+                .then(function() {
+                  self.getCartItems(self.userInfo.user_id).then(function() {
+                    alert("商品購入完了しました!");
+                    self.$router.push("/mypage");
+                  });
                 });
-              })
-              .then(function() {
-                self.getCartItems(self.userInfo.user_id).then(function() {
-                  alert("商品購入完了しました!");
-                  self.$router.push("/mypage");
-                });
-              });
+            });
           });
       } else {
         //既存の住所で購入
         //注文履歴（詳細）登録
-        self.createOrderDetailPre();
-        self.sleep(1);
-        //注文履歴登録
-        let orderData = new FormData();
-        orderData.append("user", self.userInfo.user_id);
-        orderData.append("deliverydate", self.orderInfo.deliverydate);
-        orderData.append("deliverytime", self.orderInfo.deliverytime);
-        orderData.append("payment", self.orderInfo.payment);
-        orderData.append("totalPrice", Number(self.orderInfo.totalPrice));
-        orderData.append("address", self.orderInfo.address);
-        for (var i = 0; i < self.orderInfo.orderDetail.length; i++) {
-          orderData.append("order_detail[]", self.orderInfo.orderDetail[i]);
-        }
-        //注文履歴作成API
         self
-          .createOrder(orderData)
+          .createOrderDetailPre(self)
+          // eslint-disable-next-line
+          .then(function(arr) {
+            self.sleep(1);
+            //注文履歴登録
+            self.orderInfo.user = self.userInfo.user_id;
+            self.orderInfo.total_price = Number(self.orderInfo.total_price);
+            //注文履歴作成API
+            self.createOrder(self.orderInfo);
+          })
           .then(function() {
             return new Promise(function(res) {
               //カートアイテム削除API
@@ -383,19 +377,21 @@ export default {
           .then(function() {
             self.getCartItems(self.userInfo.user_id).then(function() {
               alert("商品購入完了しました!");
+              alert(self.orderInfo.order_detail.length);
               self.$router.push("/mypage");
             });
           });
       }
     },
-    createOrderDetailPre() {
-      let self = this;
+    createOrderDetailPre(self) {
       // ループ処理の完了を受け取るPromise
-      return new Promise(function(res) {
+      // eslint-disable-next-line
+       return new Promise((resolve1, reject1) => {
         // ループ処理（再帰的に呼び出し）
         function loop(i) {
           // 非同期処理なのでPromiseを利用
-          return new Promise(function(resolve) {
+          // eslint-disable-next-line
+          return new Promise((resolve2, reject2) => {
             // 非同期処理部分
             let detailData = new FormData();
             detailData.append("item", self.cartItems[i].item.id);
@@ -407,26 +403,33 @@ export default {
             self
               .createOrderDetail(detailData)
               .then(function(res) {
-                self.orderInfo.orderDetail.push(Number(res.id));
+                self.orderInfo.order_detail.push(res.id);
               })
               .then(function() {
                 // resolveを呼び出し
                 self.sleep(1);
-                resolve(i + 1);
+                resolve2(i + 1);
               });
           }).then(function(count) {
             // ループを抜けるかどうかの判定
-            if (count > self.cartItems.length) {
+            alert("ループcount:" + count);
+            if (count > self.cartItems.length - 1) {
               // 抜ける（外側のPromiseのresolve判定を実行）
-              res("ok");
+              resolve1(self.orderInfo.order_detail);
             } else {
               // 再帰的に実行
+              alert(count + "回目実行します");
               loop(count);
             }
           });
         }
         // 初回実行
-        loop(0);
+        loop(0).then(function(res) {
+          // eslint-disable-next-line
+          return new Promise((resolve3, reject1) => {
+            resolve3(res);
+          });
+        });
       });
     },
 
