@@ -1,15 +1,15 @@
 <template>
-  <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="700">
-    <v-container class="pa-2" style="height: 1300px;">
+  <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="680">
+    <v-container class="pa-2" style="height: 100%;">
       <v-row dense>
         <v-col v-for="prod in products" :key="prod.id" :cols="4">
-          <v-card class="ma-3">
+          <v-card class="ma-5">
             <v-list-item>
               <v-list-item-avatar color="white" size="40">
                 <v-img :src="prod.seller.image"></v-img>
               </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title class="headline">{{
+                <v-list-item-title class="title-read">{{
                   prod.name
                 }}</v-list-item-title>
                 <v-list-item-subtitle>
@@ -24,7 +24,7 @@
               height="200px"
             >
             </v-img>
-            <v-card-text>
+            <v-card-text class="box-read">
               {{ prod.brief }}
             </v-card-text>
             <v-card-actions>
@@ -64,6 +64,8 @@
           </v-card>
         </v-col>
       </v-row>
+      次へ
+      <br />
     </v-container>
   </v-sheet>
 </template>
@@ -94,9 +96,12 @@ export default {
     this.$store
       .dispatch("getProducts", 1)
       .then(function(data) {
-        self.products = data.results;
-        self.nextURL = data.next;
-        self.previousUrl = data.previous;
+        if (self.isLoggedIn) {
+          self.products = data.results;
+          self.nextURL = data.next;
+          self.previousUrl = data.previous;
+          self.getOrderList(self.userInfo.user_id);
+        }
       })
       .catch(function(err) {
         alert(err);
@@ -169,6 +174,7 @@ export default {
   methods: {
     ...mapActions(["setCartItems_id"]),
     ...mapActions(["setFavorites_id"]),
+    ...mapActions(["getOrderList"]),
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;
     },
@@ -283,3 +289,19 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.title-read {
+  font-size: large;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.box-read {
+  padding-bottom: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

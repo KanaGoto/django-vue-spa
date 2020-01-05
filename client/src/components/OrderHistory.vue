@@ -7,7 +7,7 @@
         :key="order.id"
         :color="getColor()"
       >
-        <v-card :color="cardColor" style="width:600px">
+        <v-card :color="cardColor" style="width:700px">
           <v-card-title>
             <v-float>
               <h3 class="white--text font-weight-light small">
@@ -21,23 +21,31 @@
                 <v-expansion-panel-header>
                   <div calss="fb">
                     <p>
-                      Delivery Date: {{ order.delivery_date }}
-                      {{ deliverytime[order.delivery_time] }}
+                      【Delivery Date】 {{ order.delivery_date }}
+                      {{ deliverytime[order.delivery_time] }} 【Payment】
+                      {{ payment[order.payment] }}【Total】
+                      {{ order.total_price }} 円
                     </p>
-                    <p>Payment: {{ payment[order.payment] }}</p>
 
-                    <p>Total: {{ order.total_price }} 円</p>
+                    <p>
+                      【Shipping Address】 {{ order.address.first_name }}
+                      {{ order.address.last_name }}
+                    </p>
+                    〒{{ order.address.zip }} {{ order.address.state }}
+                    {{ order.address.city }}
+                    {{ order.address.street_address1 }}
+                    {{ order.address.street_address2 }}
+
+                    <p></p>
                   </div>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <div v-for="detail in order.order_detail" :key="detail.id">
                     <p>
                       {{ detail.item.name }}
-                      Quantitys:
-                      {{ detail.amount }}
-                      Subtotal: {{ detail.total_price }}
-                      (Produced by
-                      {{ detail.item.seller.username }})
+                      （ Quantity
+                      {{ detail.amount }}, Subtotal {{ detail.total_price }}円
+                      ）
                     </p>
                   </div>
                 </v-expansion-panel-content>
@@ -80,6 +88,7 @@ export default {
       ],
       colorCount: 0,
       cardColor: "",
+      loopNum: 0,
       deliverytime: deliverytime,
       payment: payment,
       items: [
@@ -95,11 +104,7 @@ export default {
         },
         { title: "About", icon: "mdi-help-box", link: "about" }
       ],
-      titles: ["home", "following", "profile"],
-      tabs: null,
-      drawer: null,
       panel: false,
-      cartdrawer: null,
       count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     };
   },
@@ -129,8 +134,9 @@ export default {
     ...mapActions(["setFavorites_id"]),
     getColor() {
       let tmp = this.colors[this.colorCount].color;
-      let loopNum = 0;
-      if (loopNum != Number(this.orderList.length)) {
+      if (this.loopNum != Number(this.orderList.length)) {
+        alert(this.loopNum);
+        this.loopNum += 1;
         if (this.colorCount == Number(this.colors.length - 1)) {
           this.colorCount = 0;
         } else {

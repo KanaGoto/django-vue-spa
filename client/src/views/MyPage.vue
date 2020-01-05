@@ -53,157 +53,155 @@
           </v-tabs>
         </v-toolbar>
       </v-row>
+    </v-card>
 
-      <!-- カート -->
-      <v-navigation-drawer
-        v-model="cartdrawer"
-        absolute
-        temporary
-        right
-        width="400"
-        height="1000px"
-      >
-        <v-list-item>
+    <!-- カート -->
+    <v-navigation-drawer
+      v-model="cartdrawer"
+      absolute
+      temporary
+      right
+      width="400"
+      height="100%"
+    >
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>カート内の商品</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-divider></v-divider>
+      <v-list>
+        <v-list-item v-for="item in cartItems" :key="item.id">
+          <v-list-item-icon>
+            <v-img
+              :src="item.item.image"
+              gradient="to bottom, rgba(0,0,0,0), rgba(0,0,0,0)"
+              height="80px"
+              width="100px"
+            ></v-img>
+          </v-list-item-icon>
+
           <v-list-item-content>
-            <v-list-item-title>カート内の商品</v-list-item-title>
+            {{ item.item.name }}
+            ( {{ item.item.seller.username }} )<br />
+            {{ item.item.shop_price }}円
+            <v-col lg="3.5" md="3.5" sm="3.5" xs="3.5">
+              <v-select
+                v-model="item.amount"
+                :items="count"
+                v-on:change="changeAmount(item.id, item.amount)"
+              ></v-select></v-col
+            >個
+            <!-- 削除ボタン-->
+            <v-flex
+              ><v-a
+                @click="deleteCartItem(item.id, item.item.id, item.item.name)"
+              >
+                <v-img
+                  src="../static/clear.svg"
+                  width="15"
+                  class="cross"
+                ></v-img></v-a
+            ></v-flex>
           </v-list-item-content>
         </v-list-item>
-        <v-divider></v-divider>
-        <v-list>
-          <v-list-item v-for="item in cartItems" :key="item.id">
+      </v-list>
+      <div class="purchase">
+        <v-btn
+          outlined
+          color="primary"
+          :disabled="cartItems.length < 1 ? true : false"
+          @click="purchase"
+        >
+          purchase
+        </v-btn>
+      </div>
+    </v-navigation-drawer>
+    <!-- setting -->
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+      width="400"
+      height="100%"
+    >
+      <div v-if="isLoggedIn">
+        <v-list-item>
+          <v-list-item-avatar color="white" size="100px">
+            <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title class="title">
+              {{ userInfo.username }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              Logged In
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </div>
+      <div v-else>
+        <v-list-item>
+          <v-list-item-avatar color="blue" size="100px"> </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title class="title">
+              unknown user
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              <a href="/login">Login</a> / Not a member ?
+              <a href="/register">Join Here</a>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </div>
+
+      <v-divider></v-divider>
+
+      <!-- ログイン時 -->
+      <div v-if="isLoggedIn">
+        <v-list dense nav>
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            link
+            :to="item.link"
+          >
             <v-list-item-icon>
-              <v-img
-                :src="item.item.image"
-                gradient="to bottom, rgba(0,0,0,0), rgba(0,0,0,0)"
-                height="80px"
-                width="100px"
-              ></v-img>
+              <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
-              {{ item.item.name }}
-              ( {{ item.item.seller.username }} )<br />
-              {{ item.item.shop_price }}円
-              <v-col lg="3.5" md="3.5" sm="3.5" xs="3.5">
-                <v-select
-                  v-model="item.amount"
-                  :items="count"
-                  v-on:change="changeAmount(item.id, item.amount)"
-                ></v-select></v-col
-              >個
-              <!-- 削除ボタン-->
-              <v-flex
-                ><v-a
-                  @click="deleteCartItem(item.id, item.item.id, item.item.name)"
-                >
-                  <v-img
-                    src="../static/clear.svg"
-                    width="15"
-                    class="cross"
-                  ></v-img></v-a
-              ></v-flex>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
-        <div class="purchase">
-          <v-btn
-            outlined
-            color="primary"
-            :disabled="cartItems.length < 1 ? true : false"
-            @click="purchase"
+      </div>
+      <!-- 未ログイン時 -->
+      <div v-else>
+        <v-list dense nav>
+          <v-list-item
+            v-for="item in offItems"
+            :key="item.title"
+            link
+            :to="item.link"
           >
-            purchase
-          </v-btn>
-        </div>
-      </v-navigation-drawer>
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
 
-      <!-- setting -->
-      <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        temporary
-        width="400"
-        height="1000px"
-      >
-        <div v-if="isLoggedIn">
-          <v-list-item>
-            <v-list-item-avatar color="white" size="100px">
-              <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
-            </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title class="title">
-                {{ userInfo.username }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                Logged In
-              </v-list-item-subtitle>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </div>
-        <div v-else>
-          <v-list-item>
-            <v-list-item-avatar color="blue" size="100px"> </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                unknown user
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                <a href="/login">Login</a> / Not a member ?
-                <a href="/register">Join Here</a>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </div>
-
-        <v-divider></v-divider>
-
-        <!-- ログイン時 -->
-        <div v-if="isLoggedIn">
-          <v-list dense nav>
-            <v-list-item
-              v-for="item in items"
-              :key="item.title"
-              link
-              :to="item.link"
-            >
-              <v-list-item-icon>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-item-icon>
-
-              <v-list-item-content>
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </div>
-        <!-- 未ログイン時 -->
-        <div v-else>
-          <v-list dense nav>
-            <v-list-item
-              v-for="item in offItems"
-              :key="item.title"
-              link
-              :to="item.link"
-            >
-              <v-list-item-icon>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-item-icon>
-
-              <v-list-item-content>
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </div>
-      </v-navigation-drawer>
-    </v-card>
-
+        </v-list>
+      </div>
+    </v-navigation-drawer>
     <v-tabs-items v-model="tabs">
       <v-tab-item>
         <home></home>
       </v-tab-item>
       <v-tab-item>
-        <following></following>
+        <favorites></favorites>
       </v-tab-item>
       <v-tab-item>
         <my-profile></my-profile>
@@ -214,7 +212,7 @@
 
 <script>
 import MyProfile from "@/components/MyProfile.vue";
-import Following from "@/components/Following.vue";
+import Favorites from "@/components/Following.vue";
 import Home from "@/components/Home.vue";
 import { mapActions } from "vuex";
 export default {
@@ -222,7 +220,7 @@ export default {
   components: {
     Home,
     MyProfile,
-    Following
+    Favorites
   },
   data() {
     return {
@@ -244,7 +242,7 @@ export default {
         { title: "Products", icon: "mdi-image", link: "mypage" },
         { title: "About", icon: "mdi-help-box", link: "about" }
       ],
-      titles: ["home", "following", "profile"],
+      titles: ["home", "favorites", "profile"],
       tabs: null,
       drawer: null,
       cartdrawer: null,

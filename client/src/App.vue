@@ -12,4 +12,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+* :not(.v-icon) {
+  font-family: "Verdana", "メイリオ", sans-serif !important;
+}
+</style>

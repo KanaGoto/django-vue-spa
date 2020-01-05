@@ -160,6 +160,8 @@ export default {
           self.$store.dispatch("getUserProducts", self.userInfo.user_id);
           //商品一覧取得
           self.$store.dispatch("getProducts", 1);
+          self.resetValidation();
+          self.reset();
           self.dialogs.dialog = false;
           self.clearProdInfo();
         },

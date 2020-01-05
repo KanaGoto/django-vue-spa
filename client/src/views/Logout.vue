@@ -9,55 +9,23 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-
 export default {
   name: "logout",
   data() {
     return {
-      valid: false,
-      username: null,
-      password: null,
-      showPassword: false,
-      nonFieldErrors: [],
-      usernameRules: [v => !!v || "ログインIDを入力してください"],
-      passwordRules: [v => !!v || "パスワードを入力してください"]
+      a: 5
     };
   },
-  computed: {
-    isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
-    }
+  created: function() {
+    setInterval(() => {
+      this.a--;
+    }, 1000);
   },
-  methods: {
-    ...mapActions(["logout"]),
-    ...mapActions(["getUserInfo"]),
-    ...mapActions(["getUserFavorites"]),
-    ...mapActions(["getCartItems"]),
-    ...mapActions(["getOrderList"]),
-    submit() {
-      let self = this;
-      this.nonFieldErrors = [];
-      this.logout([this.username, this.password]).then(
-        /* eslint-disable */
-        res => {
-          if(this.isLoggedIn === true){
-            //ユーザー情報取得
-            this.getUserInfo().then(function(){
-            //お気に入り商品名リスト取得
-            self.getUserFavorites(self.$store.getters.userInfo.user_id);
-            //カートアイテム取得
-            self.getCartItems(self.$store.getters.userInfo.user_id);
-            //購入履歴取得
-            self.getOrderList(self.$store.getters.userInfo.user_id);
-            self.$router.push("/mypage");
-            })
-          }
-        },
-        err => {
-          this.nonFieldErrors = err.response.data.nonFieldErrors;
-        }
-      );
+  watch: {
+    a: function(v) {
+      if (v <= 0) {
+        document.location = "/mypage";
+      }
     }
   }
 };
@@ -71,12 +39,13 @@ export default {
   width: 310px;
   background: white;
   border-radius: 3px;
-  -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5),
+    0 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .logout:before {
-  content: '';
+  content: "";
   position: absolute;
   top: -8px;
   right: -8px;
@@ -114,7 +83,8 @@ export default {
   margin-top: 0;
 }
 
-.logout input[type=text], .logout input[type=password] {
+.logout input[type="text"],
+.logout input[type="password"] {
   width: 278px;
 }
 
@@ -163,11 +133,12 @@ export default {
 }
 
 input {
-  font-family: 'Lucida Grande', Tahoma, Verdana, sans-serif;
+  font-family: "Lucida Grande", Tahoma, Verdana, sans-serif;
   font-size: 14px;
 }
 
-input[type=text], input[type=password] {
+input[type="text"],
+input[type="password"] {
   margin: 5px;
   padding: 0 10px;
   width: 200px;
@@ -183,13 +154,14 @@ input[type=text], input[type=password] {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-input[type=text]:focus, input[type=password]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus {
   border-color: #7dc9e2;
   outline-color: #dceefc;
   outline-offset: 0;
 }
 
-input[type=submit] {
+input[type="submit"] {
   padding: 0 18px;
   height: 29px;
   font-size: 12px;
@@ -212,14 +184,15 @@ input[type=submit] {
   box-shadow: inset 0 1px white, 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-input[type=submit]:active {
+input[type="submit"]:active {
   background: #cde5ef;
   border-color: #9eb9c2 #b3c0c8 #b4ccce;
   -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
 }
 
-.lt-ie9 input[type=text], .lt-ie9 input[type=password] {
+.lt-ie9 input[type="text"],
+.lt-ie9 input[type="password"] {
   line-height: 34px;
 }
 body {

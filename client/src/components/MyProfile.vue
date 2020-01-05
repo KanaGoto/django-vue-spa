@@ -1,30 +1,25 @@
 <template>
   <div id="profile">
-    <v-container class="pa-2" style="height:280px;">
+    <v-container class="pa-2" style="height:95px;">
       <v-row align="end" class="bg">
         <v-col align-self="start" class="pa-0" cols="12">
-          <v-avatar class="profile" color="grey" size="164" tile>
-            <v-img
-              :src="'http://localhost:8000' + userInfo.image"
-              style="border:solid 1px padding:10px margin:10px"
-            ></v-img>
+          <v-avatar class="profile" color="grey" size="155" tile>
+            <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
           </v-avatar>
         </v-col>
-        <v-col class="py-0">
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">{{
-                userInfo.username
-              }}</v-list-item-title>
-              <v-list-item-subtitle>Network Engineer</v-list-item-subtitle>
-            </v-list-item-content>
+
+        <v-col class="pa-0">
+          <v-list-item class="username">
+            <div class="title">{{ userInfo.username }}</div>
           </v-list-item>
-          <div class="text-right">
+
+          <div class="addBtn">
             <v-btn
               :loading="loading3"
               :disabled="loading3"
+              small
               color="blue-grey"
-              class="ma-2 white--text"
+              class="ma-1 white--text"
               @click="openProdUploadModal()"
             >
               add new products
@@ -39,17 +34,17 @@
       </v-row>
     </v-container>
     <v-row justify="center" align="center">
-      <h3>Your Products</h3>
+      <p class="yourProd">Your Products</p>
     </v-row>
 
-    <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="500">
-      <v-container class="pa-2" style="height: 1000px;">
+    <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="auto;">
+      <v-container class="pa-0" style="height:500px;">
         <v-row dense>
           <v-col v-for="prod in userProd" :key="prod.id" :cols="3">
-            <v-card class="ma-3">
+            <v-card class="ma-4">
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title class="headline" size="10">{{
+                  <v-list-item-title class="title-read">{{
                     prod.name
                   }}</v-list-item-title>
                 </v-list-item-content>
@@ -58,12 +53,14 @@
               <v-img
                 :src="prod.image"
                 class="white--text align-end"
-                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                height="200px"
+                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)"
+                height="180px"
               >
               </v-img>
               <v-card-text>
-                {{ prod.brief }}
+                <div class="box-read">
+                  {{ prod.brief }}
+                </div>
               </v-card-text>
 
               <v-card-actions>
@@ -73,7 +70,7 @@
                 <v-btn text color="deep-purple accent-4">
                   Edit
                 </v-btn>
-
+                <v-spacer></v-spacer>
                 <v-btn icon>
                   <v-icon>mdi-share-variant</v-icon>
                 </v-btn>
@@ -161,9 +158,19 @@ h3 {
   border-bottom: solid 3px #cce4ff;
   position: relative;
   width: 80%;
+  margin-bottom: 10px;
 }
 
 h3:after {
+  position: absolute;
+  content: " ";
+  display: block;
+  border-bottom: solid 3px #5472cd;
+  bottom: -3px;
+  width: 20%;
+}
+
+.yourProd:after {
   position: absolute;
   content: " ";
   display: block;
@@ -177,5 +184,42 @@ h3:after {
 }
 .bg {
   background-image: url("../static/mizutama_blue.jpg");
+}
+
+.username {
+  float: left;
+  padding-left: 25px;
+}
+.addBtn {
+  text-align: right;
+  margin-right: 30px;
+}
+.yourProd {
+  margin-top: 145px;
+  border-bottom: solid 3px #cce4ff;
+  position: relative;
+  width: 80%;
+  margin-bottom: 5px;
+}
+.box-read {
+  padding-bottom: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profile {
+  margin-left: 20px;
+  margin-top: 20px;
+}
+.title {
+  font-size: small;
+  font-weight: normal;
+}
+.title-read {
+  font-size: large;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
