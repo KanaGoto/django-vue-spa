@@ -34,21 +34,14 @@
             </v-btn>
           </div>
           <div class="icon">
-            <div v-if="isLoggedIn">
-              <v-badge overlap color="blue">
-                <template v-slot:badge>
-                  <span>{{ cartItems.length }}</span>
-                </template>
-                <v-icon @click.stop="cartdrawer = !cartdrawer" large
-                  >mdi-cart
-                </v-icon>
-              </v-badge>
-            </div>
-            <div v-else>
+            <v-badge overlap color="blue">
+              <template v-slot:badge>
+                <span>{{ cartItems.length }}</span>
+              </template>
               <v-icon @click.stop="cartdrawer = !cartdrawer" large
                 >mdi-cart
               </v-icon>
-            </div>
+            </v-badge>
           </div>
           <v-tabs
             slot="extension"
@@ -113,24 +106,15 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <div v-if="isLoggedIn">
-        <div class="purchase">
-          <v-btn
-            outlined
-            color="primary"
-            :disabled="(!isLoggedIn || cartItems.length) < 1 ? true : false"
-            @click="purchase"
-          >
-            purchase
-          </v-btn>
-        </div>
-      </div>
-      <div v-else>
-        <div class="purchase">
-          <v-btn outlined color="primary" :disabled="true" @click="purchase">
-            purchase
-          </v-btn>
-        </div>
+      <div class="purchase">
+        <v-btn
+          outlined
+          color="primary"
+          :disabled="cartItems.length < 1 ? true : false"
+          @click="purchase"
+        >
+          purchase
+        </v-btn>
       </div>
     </v-navigation-drawer>
     <!-- setting -->
@@ -273,7 +257,7 @@ export default {
       return this.$store.getters.userInfo;
     },
     cartItems() {
-      return this.$store.getters.cartItems.results;
+      return this.$store.getters.cartItems;
     },
     cartItems_id() {
       return this.$store.getters.cartItems_id;

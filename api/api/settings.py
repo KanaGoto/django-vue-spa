@@ -66,6 +66,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPageNumber',
     'NON_FIELD_ERRORS_KEY': 'detail', #追加
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',#追加
 }

@@ -125,7 +125,7 @@ export default {
         .then(function(data) {
           //idだけのリスト作成
           let arr = [];
-          data.forEach(item => {
+          data.results.forEach(item => {
             arr.push(item.item.id);
           });
           self.setCartItems_id(arr);
@@ -143,7 +143,7 @@ export default {
       return this.$store.getters.cartItems_id;
     },
     newCartItems() {
-      return this.$store.getters.cartItems;
+      return this.$store.getters.cartItems.results;
     },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;

@@ -8,6 +8,7 @@ from .serializer import *
 from rest_framework.pagination import PageNumberPagination
 from users.serializer import AuthSerializer
 from users.models import User
+from api.pagination import CustomPageNumber
 
 # Create your views here.
 
@@ -24,7 +25,7 @@ class CategoryListCreateView(generics.ListCreateAPIView):
 
 class ProductsListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.AllowAny,)
-    pagination_class = ProductsPagination
+    pagination_class = CustomPageNumber
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
 
