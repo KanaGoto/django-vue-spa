@@ -62,6 +62,7 @@ export default {
     ...mapActions(["getUserFavorites"]),
     ...mapActions(["getCartItems"]),
     ...mapActions(["getOrderList"]),
+
     submit() {
       let self = this;
       this.nonFieldErrors = [];

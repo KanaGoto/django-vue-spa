@@ -12,7 +12,7 @@
       <p>
         <v-text-field
           v-model="userInfo.username"
-          :counter="10"
+          :counter="20"
           :rules="nameRules"
           label="User Name"
           required
@@ -83,7 +83,7 @@ export default {
       passwordRules: [v => !!v || "password is required"],
       nameRules: [
         v => !!v || "Name is required",
-        v => (v && v.length <= 10) || "Name must be less than 10 characters"
+        v => (v && v.length <= 20) || "Name must be less than 20 characters"
       ],
       email: "",
       emailRules: [
@@ -111,7 +111,6 @@ export default {
       this.userRegister(this.userInfo).then(
         /* eslint-disable */
         res => {
-          alert(self.userInfo.email)
           this.afterRegist()
         },
         err => {
@@ -135,7 +134,6 @@ export default {
         this.login([this.userInfo.email, this.userInfo.password]).then(
           res => {
             if(self.isLoggedIn === true){
-              alert("ok");
               self.$router.push("/mypage");
             }
           },

@@ -38,51 +38,45 @@
     </v-row>
 
     <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="auto;">
-      <v-container class="pa-0">
+      <v-container class="pa-0" style="height:500px;">
         <v-row dense>
-          <v-slide-group v-model="model" class="pa-0" show-arrows>
-            <v-slide-item
-              v-for="n in Number(userProd.length)"
-              :key="n"
-              v-slot:default="{ active, toggle }"
-            >
-              <v-card class="ma-3" width="250px">
-                <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title class="title-read">{{
-                      userProd[n].name
-                    }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
+          <v-col v-for="prod in userProd" :key="prod.id" :cols="3">
+            <v-card class="ma-4">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title class="title-read">{{
+                    prod.name
+                  }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
 
-                <v-img
-                  :src="userProd[n].image"
-                  class="white--text align-end"
-                  gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)"
-                  height="180px"
-                >
-                </v-img>
-                <v-card-text>
-                  <div class="box-read">
-                    {{ userProd[n].brief }}
-                  </div>
-                </v-card-text>
+              <v-img
+                :src="prod.image"
+                class="white--text align-end"
+                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)"
+                height="180px"
+              >
+              </v-img>
+              <v-card-text>
+                <div class="box-read">
+                  {{ prod.brief }}
+                </div>
+              </v-card-text>
 
-                <v-card-actions>
-                  <v-btn text color="deep-purple accent-4">
-                    Detail
-                  </v-btn>
-                  <v-btn text color="deep-purple accent-4">
-                    Edit
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn icon>
-                    <v-icon>mdi-share-variant</v-icon>
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-slide-item>
-          </v-slide-group>
+              <v-card-actions>
+                <v-btn text color="deep-purple accent-4">
+                  Detail
+                </v-btn>
+                <v-btn text color="deep-purple accent-4">
+                  Edit
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn icon>
+                  <v-icon>mdi-share-variant</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
         </v-row>
       </v-container>
     </v-sheet>
@@ -107,7 +101,8 @@ export default {
     },
     offsetTop: 0,
     userProd: [],
-    model: []
+    nextUrl: null,
+    previousUrl: null
   }),
   created() {
     if (this.$store.getters.isLoggedIn === false) {
@@ -115,7 +110,9 @@ export default {
     }
     let self = this;
     this.$store.dispatch("getUserProducts", this.userInfo.user_id).then(res => {
-      self.userProd = res;
+      self.userProd = res.results;
+      self.nextUrl = res.next;
+      self.previousUrl = res.previous;
     });
   },
   computed: {
@@ -129,7 +126,9 @@ export default {
   watch: {
     // eslint-disable-next-line
     newUserProd: function(newProd, oldProd) {
-      this.userProd = newProd;
+      this.userProd = newProd.results;
+      this.nextURL = newProd.next;
+      this.previousUrl = newProd.previous;
     }
   },
   methods: {

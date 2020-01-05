@@ -271,7 +271,7 @@ export default {
       return this.$store.getters.userInfo;
     },
     cartItems() {
-      return this.$store.getters.cartItems.results;
+      return this.$store.getters.cartItems;
     },
     cartItems_id() {
       return this.$store.getters.cartItems_id;

@@ -4,7 +4,7 @@ export default function(cli) {
       return cli.get(`products/?page=` + pageNo);
     },
     findByUser(id) {
-      return cli.get(`products/?user_id=${id}`);
+      return cli.get(`products/users/?user_id=${id}`);
     },
     findById(id) {
       return cli.post(`products/${id}/`);

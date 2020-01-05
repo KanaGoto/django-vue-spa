@@ -64,8 +64,20 @@
           </v-card>
         </v-col>
       </v-row>
-      次へ
-      <br />
+      <template>
+        <div class="text-center">
+          <v-container>
+            <v-row justify="center">
+              <v-pagination
+                v-model="currentPage"
+                :length="totalPage"
+                :total-visible="5"
+              ></v-pagination>
+            </v-row>
+          </v-container>
+          <br />
+        </div>
+      </template>
     </v-container>
   </v-sheet>
 </template>
@@ -78,12 +90,11 @@ export default {
   },
   data() {
     return {
-      products: [],
-      nextURL: null,
-      previousUrl: null,
       favorites: [],
       favorite_id: [],
-      pageNo: 1,
+      products: [],
+      currentPage: 1,
+      totalPage: 1,
       offsetTop: 0,
       dialogs: {
         dialog: false,
@@ -96,10 +107,10 @@ export default {
     this.$store
       .dispatch("getProducts", 1)
       .then(function(data) {
+        self.currentPage = data.current;
+        self.products = data.results;
+        self.totalPage = data.total_pages;
         if (self.isLoggedIn) {
-          self.products = data.results;
-          self.nextURL = data.next;
-          self.previousUrl = data.previous;
           self.getOrderList(self.userInfo.user_id);
         }
       })
@@ -137,54 +148,40 @@ export default {
       return this.$store.getters.userInfo;
     },
     newProducts() {
-      return this.$store.getters.products;
+      return this.$store.getters.products.results;
     },
     cartItems_id() {
       return this.$store.getters.cartItems_id;
     },
     newCartItems() {
-      return this.$store.getters.cartItems.results;
+      return this.$store.getters.cartItems;
     },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
     },
     userFavorites() {
       return this.$store.getters.favorites;
-    },
-    nextPageIsNull() {
-      if (this.nextURL === null) {
-        return true;
-      }
-      return false;
-    },
-    previousPageIsNull() {
-      if (this.previousUrl === null) {
-        return true;
-      }
-      return false;
     }
   },
   watch: {
     newProducts: function(newProd) {
-      this.products = newProd.results;
-      this.nextURL = newProd.next;
-      this.previousUrl = newProd.previous;
+      self.products = newProd;
+    },
+    currentPage: function(newPageNo) {
+      let self = this;
+      this.$store.dispatch("getProducts", newPageNo).then(function(data) {
+        self.products = data.results;
+        self.totalPage = data.total_pages;
+      });
     }
   },
   methods: {
     ...mapActions(["setCartItems_id"]),
     ...mapActions(["setFavorites_id"]),
     ...mapActions(["getOrderList"]),
+
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;
-    },
-    pageNext() {
-      this.pageNo += 1;
-      this.$store.dispatch("getProducts", this.pageNo);
-    },
-    pagePrevious() {
-      this.pageNo -= 1;
-      this.$store.dispatch("getProducts", this.pageNo);
     },
     openModal(prod) {
       this.dialogs.dialog = true;

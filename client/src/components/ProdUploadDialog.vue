@@ -156,17 +156,16 @@ export default {
       this.createProduct(data).then(
         /* eslint-disable */
         res => {
-          alert(self.userInfo.user_id);
           self.$store.dispatch("getUserProducts", self.userInfo.user_id);
           //商品一覧取得
           self.$store.dispatch("getProducts", 1);
+          self.dialogs.dialog = false;
           self.resetValidation();
           self.reset();
-          self.dialogs.dialog = false;
           self.clearProdInfo();
         },
         err => {
-          alert(this.getApiError(err));
+
           self.nonFieldErrors = self.getApiError(err);
         }
       );
@@ -193,7 +192,7 @@ export default {
         this.prodInfo.image = null;
       },
       getApiError(obj){
-        return Object.keys(obj).map(function (key) { return obj[key][0]; })
+        return Object.keys(obj).map(function (key) { return obj[key]; })
       },
       getBase64 (file) {
       return new Promise((resolve, reject) => {

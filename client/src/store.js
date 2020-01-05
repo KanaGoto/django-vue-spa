@@ -222,7 +222,6 @@ export default new Vuex.Store({
           })
           .catch(err => {
             alert("プロダクト登録失敗");
-            alert(err);
             reject(err);
           });
       });
