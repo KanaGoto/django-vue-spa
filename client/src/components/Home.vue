@@ -5,7 +5,7 @@
         <v-col v-for="prod in products" :key="prod.id" :cols="4">
           <v-card class="ma-5">
             <v-list-item>
-              <v-list-item-avatar color="white" size="40">
+              <v-list-item-avatar color="grey" size="40">
                 <v-img :src="prod.seller.image"></v-img>
               </v-list-item-avatar>
               <v-list-item-content>
@@ -54,9 +54,6 @@
                   @click="changeFavorite(prod.id)"
                   >mdi-heart</v-icon
                 >
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-share-variant</v-icon>
               </v-btn>
             </v-card-actions>
             <!-- dialog -->
@@ -189,7 +186,7 @@ export default {
     },
     addCart(prod_id) {
       if (!this.isLoggedIn) {
-        return "";
+        this.$router.push("/login");
       }
       let self = this;
       let data = new FormData();
@@ -206,7 +203,6 @@ export default {
               let arr = [];
               data.forEach(item => {
                 arr.push(item.item.id);
-                alert("カートに商品を追加しました！ 商品名:" + item.item.name);
               });
               self.setCartItems_id(arr);
             });
@@ -234,15 +230,15 @@ export default {
                     });
                     self.setCartItems_id(arr);
                   });
-                alert("カートに商品を追加しました！ 商品名:" + item.item.name);
               });
           }
         });
       }
+      alert("カートに商品を追加しました！");
     },
     changeFavorite(prod_id) {
       if (!this.isLoggedIn) {
-        return "";
+        this.$router.push("/login");
       }
       let self = this;
       let data = new FormData();
@@ -264,7 +260,6 @@ export default {
       } else {
         this.favorites.forEach(item => {
           if (item.item.id === prod_id) {
-            alert("以下を消します" + item.id);
             self.$store
               .dispatch("deleteUserFavorites", item.id)
               .then(function() {

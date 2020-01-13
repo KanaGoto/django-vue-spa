@@ -1,3 +1,4 @@
+<!--不使用-->
 <template>
   <div class="product">
     <h1>id. {{ id }}</h1>

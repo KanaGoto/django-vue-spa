@@ -1,89 +1,93 @@
 <template>
-  <v-dialog v-model="dialogs.dialog" width="500">
-    <div class="prodForm">
-      <app-navbar>Upload Your Product</app-navbar>
-      <v-alert :value="nonFieldErrors.length" type="error">
-        <div v-for="error in nonFieldErrors" :key="error">
-          <h5>
-            {{ error }}
-          </h5>
+  <v-dialog v-model="dialogs.dialog" width="550px">
+    <v-card>
+      <v-list-item class="pa-0">
+        <div class="prodForm">
+          <app-navbar>Upload Your Product</app-navbar>
+          <v-alert :value="nonFieldErrors.length" type="error">
+            <div v-for="error in nonFieldErrors" :key="error">
+              <h5>
+                {{ error }}
+              </h5>
+            </div>
+          </v-alert>
+          <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+            <p>
+              <v-text-field
+                v-model="prodInfo.name"
+                :counter="30"
+                :rules="nameRules"
+                label="Name"
+                required
+              ></v-text-field>
+            </p>
+            <p>
+              <v-select
+                v-model="prodInfo.category"
+                item-text="name"
+                item-value="id"
+                :items="categories"
+                :rules="[v => !!v || 'category is required']"
+                label="category"
+                required
+              />
+            </p>
+            <p>
+              <img v-if="uploadImageUrl" :src="uploadImageUrl" width="200" />
+              <v-file-input
+                accept="image/*"
+                show-size
+                label="image"
+                prepend-icon="mdi-image"
+                @change="onImagePicked"
+              ></v-file-input>
+            </p>
+            <p>
+              <v-text-field
+                v-model="prodInfo.market_price"
+                label="Market Price"
+              ></v-text-field>
+            </p>
+            <p>
+              <v-text-field
+                v-model="prodInfo.shop_price"
+                :rules="salesPriceRules"
+                label="Sales Price"
+                required
+              ></v-text-field>
+            </p>
+            <p>
+              <v-text-field
+                v-model="prodInfo.products_num"
+                label="Stock Quantity"
+                required
+              ></v-text-field>
+            </p>
+            <p>
+              <v-textarea
+                v-model="prodInfo.brief"
+                label="Description"
+                :counter="1000"
+                :rules="descriptionRules"
+                required
+                rows="5"
+              ></v-textarea>
+            </p>
+            <div class="submit">
+              <v-spacer></v-spacer>
+              <v-spacer></v-spacer>
+              <v-checkbox
+                v-model="prodInfo.ship_free"
+                label="ship free"
+              ></v-checkbox>
+              <v-btn color="warning" :disabled="!valid" @click="upload()">
+                upload
+              </v-btn>
+            </div>
+          </v-form>
         </div>
-      </v-alert>
-      <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-        <p>
-          <v-text-field
-            v-model="prodInfo.name"
-            :counter="30"
-            :rules="nameRules"
-            label="Name"
-            required
-          ></v-text-field>
-        </p>
-        <p>
-          <v-select
-            v-model="prodInfo.category"
-            item-text="name"
-            item-value="id"
-            :items="categories"
-            :rules="[v => !!v || 'category is required']"
-            label="category"
-            required
-          />
-        </p>
-        <p>
-          <img v-if="uploadImageUrl" :src="uploadImageUrl" width="200" />
-          <v-file-input
-            accept="image/*"
-            show-size
-            label="image"
-            prepend-icon="mdi-image"
-            @change="onImagePicked"
-          ></v-file-input>
-        </p>
-        <p>
-          <v-text-field
-            v-model="prodInfo.market_price"
-            label="Market Price"
-          ></v-text-field>
-        </p>
-        <p>
-          <v-text-field
-            v-model="prodInfo.shop_price"
-            :rules="salesPriceRules"
-            label="Sales Price"
-            required
-          ></v-text-field>
-        </p>
-        <p>
-          <v-text-field
-            v-model="prodInfo.products_num"
-            label="Stock Quantity"
-            required
-          ></v-text-field>
-        </p>
-        <p>
-          <v-textarea
-            v-model="prodInfo.brief"
-            label="Description"
-            :counter="1000"
-            :rules="descriptionRules"
-            required
-            rows="5"
-          ></v-textarea>
-        </p>
-        <div class="submit">
-          <v-spacer></v-spacer>
-          <v-spacer></v-spacer>
-          <v-checkbox
-            v-model="prodInfo.ship_free"
-            label="ship free"
-          ></v-checkbox>
-          <v-btn color="warning" :disabled="!valid" @click="upload()">
-            upload
-          </v-btn>
-        </div>
-      </v-form>
-    </div>
+      </v-list-item>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -225,9 +229,8 @@ export default {
 .prodForm {
   position: relative;
   text-align: center;
-  margin: 30px auto;
   padding: 20px 50px 20px;
-  width: 500px;
+  width: 100%;
   background: white;
   border-radius: 3px;
   -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5),

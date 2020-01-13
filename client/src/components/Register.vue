@@ -134,7 +134,7 @@ export default {
         this.login([this.userInfo.email, this.userInfo.password]).then(
           res => {
             if(self.isLoggedIn === true){
-              self.$router.push("/mypage");
+              self.$router.push("/");
             }
           },
           err => {

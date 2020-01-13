@@ -1,10 +1,11 @@
 <template>
   <div class="logout">
-    <h1>Thank you</h1>
-    <h4 class="logout-help">
-      we'll soon go back to Top page ...
-      <h3><a href="/login">login again?</a></h3>
-    </h4>
+    <h1>Logged Out</h1>
+    <div class="logout-help">
+      Thank you !!
+      <br />
+      <p style="font-weight:bold; pa-3"><a href="/login">login again?</a></p>
+    </div>
   </div>
 </template>
 
@@ -13,18 +14,18 @@ export default {
   name: "logout",
   data() {
     return {
-      a: 5
+      time: 5
     };
   },
   created: function() {
     setInterval(() => {
-      this.a--;
+      this.time--;
     }, 1000);
   },
   watch: {
-    a: function(v) {
+    time: function(v) {
       if (v <= 0) {
-        document.location = "/mypage";
+        document.location = "/";
       }
     }
   }
@@ -60,11 +61,9 @@ export default {
   margin: -20px -20px 21px;
   line-height: 40px;
   font-size: 15px;
-  font-weight: bold;
-  color: #555;
+  color: white;
   text-align: center;
-  text-shadow: 0 1px white;
-  background: #f3f3f3;
+  background: rgba(2, 107, 63, 0.521);
   border-bottom: 1px solid #cfcfcf;
   border-radius: 3px 3px 0 0;
   background-image: -webkit-linear-gradient(top, whiteffd, #eef2f5);
@@ -112,21 +111,20 @@ export default {
 
 .logout-help {
   margin: 20px 0;
-  font-size: 11px;
-  color: white;
+  padding-bottom: 5px;
+  font-size: 12px;
   text-align: center;
-  text-shadow: 0 1px #2a85a1;
 }
 
 .logout-help a {
-  color: #cce7fa;
+  color: #101111;
   text-decoration: none;
 }
 
 .logout-help a:hover {
+  color: #074279;
   text-decoration: underline;
 }
-
 :-moz-placeholder {
   color: #c9c9c9 !important;
   font-size: 13px;

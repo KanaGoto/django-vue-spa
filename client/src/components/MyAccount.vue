@@ -1,74 +1,76 @@
 <template>
   <div id="myAccount">
-    <div class="members">
-      <app-navbar>My Account</app-navbar>
-      <br />
-      <v-alert :value="nonFieldErrors.length" type="error">
-        <div v-for="error in nonFieldErrors" :key="error">
-          <h5>
-            {{ error }}
-          </h5>
-        </div>
-      </v-alert>
-      <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-        <p>
-          <img v-if="uploadImageUrl" :src="uploadImageUrl" width="100" />
-          <v-file-input
-            accept="image/*"
-            show-size
-            label="image"
-            prepend-icon="mdi-image"
-            @change="onImagePicked"
-          ></v-file-input>
-        </p>
-        <p>
-          <v-text-field
-            v-model="newUserInfo.username"
-            :counter="20"
-            :rules="nameRules"
-            label="User Name"
-            required
-          ></v-text-field>
-        </p>
-        <p>
-          <v-text-field
-            v-model="newUserInfo.email"
-            :rules="emailRules"
-            label="Email"
-            required
-          ></v-text-field>
-        </p>
-        <p>
-          <v-select
-            v-model="newUserInfo.gender"
-            :items="gender"
-            :rules="[v => !!v || 'gender is required']"
-            label="gender"
-            item-text="label"
-            item-value="value"
-            required
-          ></v-select>
-        </p>
-        <p>
-          <v-textarea
-            v-model="newUserInfo.profile"
-            label="Profile"
-            rows="3"
-          ></v-textarea>
-        </p>
-        <div class="submit">
-          <v-spacer></v-spacer>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="warning"
-            :disabled="!(isEdited && valid)"
-            @click="submit()"
-          >
-            update
-          </v-btn>
-        </div>
-      </v-form>
-    </div>
+    <v-container>
+      <div class="members">
+        <app-navbar>My Account</app-navbar>
+        <br />
+        <v-alert :value="nonFieldErrors.length" type="error">
+          <div v-for="error in nonFieldErrors" :key="error">
+            <h5>
+              {{ error }}
+            </h5>
+          </div>
+        </v-alert>
+        <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+          <p>
+            <img v-if="uploadImageUrl" :src="uploadImageUrl" width="100" />
+            <v-file-input
+              accept="image/*"
+              show-size
+              label="image"
+              prepend-icon="mdi-image"
+              @change="onImagePicked"
+            ></v-file-input>
+          </p>
+          <p>
+            <v-text-field
+              v-model="newUserInfo.username"
+              :counter="20"
+              :rules="nameRules"
+              label="User Name"
+              required
+            ></v-text-field>
+          </p>
+          <p>
+            <v-text-field
+              v-model="newUserInfo.email"
+              :rules="emailRules"
+              label="Email"
+              required
+            ></v-text-field>
+          </p>
+          <p>
+            <v-select
+              v-model="newUserInfo.gender"
+              :items="gender"
+              :rules="[v => !!v || 'gender is required']"
+              label="gender"
+              item-text="label"
+              item-value="value"
+              required
+            ></v-select>
+          </p>
+          <p>
+            <v-textarea
+              v-model="newUserInfo.profile"
+              label="Profile"
+              rows="3"
+            ></v-textarea>
+          </p>
+          <div class="submit">
+            <v-spacer></v-spacer>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="warning"
+              :disabled="!(isEdited && valid)"
+              @click="submit()"
+            >
+              update
+            </v-btn>
+          </div>
+        </v-form>
+      </div>
+    </v-container>
     <!-- leftNavi -->
     <left-navi :isLoggedIn="isLoggedIn" :userInfo="userInfo"></left-navi>
   </div>
@@ -219,11 +221,12 @@ export default {
 
 <style scoped>
 .members {
+  margin-left: 35%;
+  margin-top: 25px;
   position: relative;
   text-align: center;
-  margin: 30px auto;
   padding: 20px 50px 20px;
-  width: 500px;
+  width: 550px;
   background: white;
   border-radius: 3px;
   -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -232,6 +235,14 @@ export default {
 
 .submit {
   text-align: right;
+}
+
+body {
+  background-size: 30px 30px;
+  margin: 0 auto;
+  background-image: radial-gradient(#C6E6FB 15%, transparent 20%),
+                    radial-gradient(#FCFBCA 15%, transparent 20%);
+  background-position: 0 0, 15px 15px;
 }
 
 </style>

@@ -25,7 +25,6 @@
               add new products
               <v-icon right dark>mdi-cloud-upload</v-icon>
             </v-btn>
-            <user-dialog :dialogs="userDialogs"></user-dialog>
             <prod-upload-dialog
               :dialogs="prodUploadDialogs"
             ></prod-upload-dialog>
@@ -40,23 +39,23 @@
     <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="auto;">
       <v-container class="pa-0">
         <v-row dense>
-          <v-slide-group v-model="model" class="pa-0" show-arrows>
+          <v-slide-group v-model="this.userItemList" class="pa-0">
             <v-slide-item
-              v-for="n in Number(userProd.length)"
-              :key="n"
+              v-for="userItem in userProd"
+              :key="userItem.id"
               v-slot:default="{ active, toggle }"
             >
               <v-card class="ma-3" width="250px">
                 <v-list-item>
                   <v-list-item-content>
                     <v-list-item-title class="title-read">{{
-                      userProd[n].name
+                      userItem.name
                     }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
 
                 <v-img
-                  :src="userProd[n].image"
+                  :src="userItem.image"
                   class="white--text align-end"
                   gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)"
                   height="180px"
@@ -64,22 +63,30 @@
                 </v-img>
                 <v-card-text>
                   <div class="box-read">
-                    {{ userProd[n].brief }}
+                    {{ userItem.brief }}
                   </div>
                 </v-card-text>
 
                 <v-card-actions>
-                  <v-btn text color="deep-purple accent-4">
+                  <v-btn
+                    slot="activator"
+                    text
+                    color="red lighten-2"
+                    @click="openModal(userItem)"
+                  >
                     Detail
                   </v-btn>
-                  <v-btn text color="deep-purple accent-4">
+                  <v-btn
+                    text
+                    color="deep-purple accent-4"
+                    @click="doEdit(userItem.id)"
+                  >
                     Edit
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn icon>
-                    <v-icon>mdi-share-variant</v-icon>
-                  </v-btn>
                 </v-card-actions>
+                <!-- dialog -->
+                <app-dialog :dialogs="dialogs"></app-dialog>
               </v-card>
             </v-slide-item>
           </v-slide-group>
@@ -89,25 +96,25 @@
   </div>
 </template>
 <script>
-import userDialog from "@/components/UserDialog.vue";
+import Dialog from "./ProdDialog.vue";
 import prodUploadDialog from "@/components/ProdUploadDialog.vue";
 export default {
   components: {
-    userDialog: userDialog,
+    appDialog: Dialog,
     prodUploadDialog: prodUploadDialog
   },
   data: () => ({
-    userDialogs: {
-      dialog: false,
-      prod: []
-    },
     prodUploadDialogs: {
       dialog: false,
       prod: []
     },
     offsetTop: 0,
     userProd: [],
-    model: []
+    userItemList: [],
+    dialogs: {
+      dialog: false,
+      prod: []
+    }
   }),
   created() {
     if (this.$store.getters.isLoggedIn === false) {
@@ -136,11 +143,15 @@ export default {
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;
     },
-    openUserModal() {
-      this.userDialogs.dialog = true;
-    },
     openProdUploadModal() {
       this.prodUploadDialogs.dialog = true;
+    },
+    openModal(prod) {
+      this.dialogs.dialog = true;
+      this.dialogs.prod = prod;
+    },
+    doEdit(prod_id) {
+      alert("機能実装中 (商品ID" + prod_id + ")");
     }
   }
 };

@@ -346,7 +346,7 @@ export default {
                 .then(function() {
                   self.getCartItems(self.userInfo.user_id).then(function() {
                     alert("商品購入完了しました!");
-                    self.$router.push("/mypage");
+                    self.$router.push("/");
                   });
                 });
             });
@@ -377,8 +377,7 @@ export default {
           .then(function() {
             self.getCartItems(self.userInfo.user_id).then(function() {
               alert("商品購入完了しました!");
-              alert(self.orderInfo.order_detail.length);
-              self.$router.push("/mypage");
+              self.$router.push("/");
             });
           });
       }
@@ -412,13 +411,11 @@ export default {
               });
           }).then(function(count) {
             // ループを抜けるかどうかの判定
-            alert("ループcount:" + count);
             if (count > self.cartItems.length - 1) {
               // 抜ける（外側のPromiseのresolve判定を実行）
               resolve1(self.orderInfo.order_detail);
             } else {
               // 再帰的に実行
-              alert(count + "回目実行します");
               loop(count);
             }
           });

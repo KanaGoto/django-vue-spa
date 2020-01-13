@@ -1,10 +1,12 @@
 # ビルド環境
-FROM node:lts-alpine as build-stage
+FROM node:11.14.0-alpine
+RUN mkdir app
+#ADD package*.json /app/
+ADD . /app/
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
+RUN npm install -g npm @vue/cli
 RUN npm run build
+
 
 # 本番環境
 FROM nginx:stable-alpine as production-stage

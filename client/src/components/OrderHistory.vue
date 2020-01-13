@@ -1,61 +1,63 @@
 <template>
   <div id="hidtory" style="margin-left:35%">
-    <!-- timeline -->
-    <v-timeline align-top dense>
-      <v-timeline-item
-        v-for="order in orderList"
-        :key="order.id"
-        :color="getColor()"
-      >
-        <v-card :color="cardColor" style="width:700px">
-          <v-card-title>
-            <v-float>
-              <h3 class="white--text font-weight-light small">
-                ORDER No. {{ order.id }}
-              </h3>
-            </v-float>
-          </v-card-title>
-          <v-card>
-            <v-expansion-panels v-model="panel">
-              <v-expansion-panel>
-                <v-expansion-panel-header>
-                  <div calss="fb">
-                    <p>
-                      【Delivery Date】 {{ order.delivery_date }}
-                      {{ deliverytime[order.delivery_time] }} 【Payment】
-                      {{ payment[order.payment] }}【Total】
-                      {{ order.total_price }} 円
-                    </p>
+    <div v-if="orderList.length > 0">
+      <!-- timeline -->
+      <v-timeline align-top dense>
+        <v-timeline-item
+          v-for="order in orderList"
+          :key="order.id"
+          :color="getColor()"
+        >
+          <v-card :color="cardColor" style="width:700px">
+            <v-card-title>
+              <v-float>
+                <h3 class="white--text font-weight-light small">
+                  ORDER No. {{ order.id }}
+                </h3>
+              </v-float>
+            </v-card-title>
+            <v-card>
+              <v-expansion-panels v-model="panel">
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    <div calss="fb">
+                      <p>
+                        【Delivery Date】 {{ order.delivery_date }}
+                        {{ deliverytime[order.delivery_time] }} 【Payment】
+                        {{ payment[order.payment] }}【Total】
+                        {{ order.total_price }} 円
+                      </p>
 
-                    <p>
-                      【Shipping Address】 {{ order.address.first_name }}
-                      {{ order.address.last_name }}
-                    </p>
-                    〒{{ order.address.zip }} {{ order.address.state }}
-                    {{ order.address.city }}
-                    {{ order.address.street_address1 }}
-                    {{ order.address.street_address2 }}
+                      <p>
+                        【Shipping Address】 {{ order.address.first_name }}
+                        {{ order.address.last_name }}
+                      </p>
+                      〒{{ order.address.zip }} {{ order.address.state }}
+                      {{ order.address.city }}
+                      {{ order.address.street_address1 }}
+                      {{ order.address.street_address2 }}
 
-                    <p></p>
-                  </div>
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <div v-for="detail in order.order_detail" :key="detail.id">
-                    <p>
-                      {{ detail.item.name }}
-                      （ Quantity
-                      {{ detail.amount }}, Subtotal {{ detail.total_price }}円
-                      ）
-                    </p>
-                  </div>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
+                      <p></p>
+                    </div>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <div v-for="detail in order.order_detail" :key="detail.id">
+                      <p>
+                        {{ detail.item.name }}
+                        （ Quantity
+                        {{ detail.amount }}, Subtotal {{ detail.total_price }}円
+                        ）
+                      </p>
+                    </div>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-card>
           </v-card>
-        </v-card>
-      </v-timeline-item>
-    </v-timeline>
-
+        </v-timeline-item>
+      </v-timeline>
+    </div>
+    <div v-else></div>
     <!-- leftNavi -->
     <left-navi :isLoggedIn="isLoggedIn" :userInfo="userInfo"></left-navi>
   </div>
@@ -135,7 +137,6 @@ export default {
     getColor() {
       let tmp = this.colors[this.colorCount].color;
       if (this.loopNum != Number(this.orderList.length)) {
-        alert(this.loopNum);
         this.loopNum += 1;
         if (this.colorCount == Number(this.colors.length - 1)) {
           this.colorCount = 0;

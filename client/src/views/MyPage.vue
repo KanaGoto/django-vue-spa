@@ -13,7 +13,7 @@
           <v-app-bar-nav-icon
             large
             style="margin-left:15px"
-            @click.stop="drawer = !drawer"
+            @click.stop="leftDrawer = !leftDrawer"
           ></v-app-bar-nav-icon>
           <div class="logo">
             <v-img
@@ -135,7 +135,7 @@
     </v-navigation-drawer>
     <!-- setting -->
     <v-navigation-drawer
-      v-model="drawer"
+      v-model="leftDrawer"
       absolute
       temporary
       width="400"
@@ -143,7 +143,7 @@
     >
       <div v-if="isLoggedIn">
         <v-list-item>
-          <v-list-item-avatar color="white" size="100px">
+          <v-list-item-avatar color="grey" size="100px">
             <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
@@ -158,7 +158,9 @@
       </div>
       <div v-else>
         <v-list-item>
-          <v-list-item-avatar color="blue" size="100px"> </v-list-item-avatar>
+          <v-list-item-avatar color="blue" size="100px">
+            <v-img src="../static/unknown.png"></v-img>
+          </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="title">
               unknown user
@@ -216,9 +218,9 @@
       <v-tab-item>
         <home></home>
       </v-tab-item>
-      <v-tab-item>
+      <!-- <v-tab-item>
         <favorites></favorites>
-      </v-tab-item>
+      </v-tab-item> -->
       <v-tab-item>
         <my-profile></my-profile>
       </v-tab-item>
@@ -228,20 +230,19 @@
 
 <script>
 import MyProfile from "@/components/MyProfile.vue";
-import Favorites from "@/components/Following.vue";
+//import Favorites from "@/components/Following.vue";
 import Home from "@/components/Home.vue";
 import { mapActions } from "vuex";
 export default {
   name: "Mypage",
   components: {
     Home,
-    MyProfile,
-    Favorites
+    MyProfile
   },
   data() {
     return {
       items: [
-        { title: "Products", icon: "mdi-image", link: "mypage" },
+        { title: "Products", icon: "mdi-image", link: "/" },
         {
           title: "My Account",
           icon: "mdi-account-circle",
@@ -255,12 +256,12 @@ export default {
         { title: "About", icon: "mdi-help-box", link: "about" }
       ],
       offItems: [
-        { title: "Products", icon: "mdi-image", link: "mypage" },
+        { title: "Products", icon: "mdi-image", link: "/" },
         { title: "About", icon: "mdi-help-box", link: "about" }
       ],
-      titles: ["home", "favorites", "profile"],
+      titles: ["home", "profile"],
       tabs: null,
-      drawer: null,
+      leftDrawer: null,
       cartdrawer: null,
       count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     };

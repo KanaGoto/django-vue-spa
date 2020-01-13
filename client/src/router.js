@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-//import Home from "./views/Home.vue";
 import store from "@/store.js";
 import Register from "@/views/Register.vue";
 import Login from "@/views/Login.vue";
@@ -32,7 +31,7 @@ const router = new Router({
       component: Logout
     },
     {
-      path: "/mypage",
+      path: "/",
       name: "mypage",
       component: MyPage
     },
@@ -55,21 +54,6 @@ const router = new Router({
       path: "/about",
       name: "about",
       component: () => import("./views/About.vue")
-    },
-    {
-      path: "/menu",
-      name: "menu",
-      component: () => import("./views/Menu.vue")
-    },
-    {
-      path: "/sign-in",
-      name: "signin",
-      component: () => import("./views/Signin.vue")
-    },
-    {
-      path: "/join",
-      name: "join",
-      component: () => import("./views/Join.vue")
     }
   ]
 });

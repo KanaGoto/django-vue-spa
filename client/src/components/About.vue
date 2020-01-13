@@ -1,8 +1,10 @@
 <template>
-  <div id="about" style="margin-left:35%">
-    aaa just explanation! haha
+  <div id="about">
     <!-- leftNavi -->
     <left-navi :isLoggedIn="isLoggedIn" :userInfo="userInfo"></left-navi>
+    <v-container style="margin-left:30%">
+    <v-img src="../static/top.jpg" class="bg"></v-img>
+    </v-container>
   </div>
 </template>
 
@@ -14,28 +16,8 @@ export default {
   },
   data() {
     return {
-      items: [
-        {
-          title: "My Account",
-          icon: "mdi-image",
-          link: "account"
-        },
-        {
-          title: "Order History",
-          icon: "mdi-view-dashboard",
-          link: "orders"
-        },
-        { title: "About", icon: "mdi-help-box", link: "about" }
-      ],
-      titles: ["home", "following", "profile"],
-      tabs: null,
-      drawer: null,
-      panel: false,
-      count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    };
-  },
-  created() {
-    this.getOrderList(this.userInfo.user_id);
+      backgroundImageSrc: require("../static/top.jpg")
+    }
   },
   computed: {
     isLoggedIn() {
@@ -43,51 +25,14 @@ export default {
     },
     userInfo() {
       return this.$store.getters.userInfo;
-    },
-    orderList() {
-      return this.$store.getters.orderList.results;
-    },
-    nextURL() {
-      return this.$store.getters.orderList.next;
-    },
-    beforeURL() {
-      return this.$store.getters.orderList.before;
-    }
-  },
-  methods: {
-    getColor() {
-      let tmp = this.colors[this.colorCount].color;
-      let loopNum = 0;
-      if (loopNum != Number(this.orderList.length)) {
-        if (this.colorCount == Number(this.colors.length - 1)) {
-          this.colorCount = 0;
-        } else {
-          this.colorCount += 1;
-        }
-        this.cardColor = tmp;
-        return tmp;
-      } else {
-        return "";
-      }
-    },
-    onScroll(e) {
-      this.offsetTop = e.target.scrollTop;
-    },
-    pageNext() {
-      this.pageNo += 1;
-      this.$store.dispatch("getProducts", this.pageNo);
     }
   }
 };
 </script>
 
 <style scoped>
-.timeline {
-  text-align: left;
-  margin: 50px;
-}
-.fb {
-  /* floatを解除 */
-  clear: both;
+.bg {
+  width: 80%;
+  height: 750px;
 }
 </style>
