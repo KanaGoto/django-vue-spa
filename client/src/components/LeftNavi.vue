@@ -9,12 +9,7 @@
     <div v-if="isLoggedIn">
       <v-list-item>
         <v-list-item-avatar color="grey" size="100px">
-          <div v-if="userInfo.image != null">
-            <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
-          </div>
-          <div v-else>
-            <v-img src="../static/unknown.png"></v-img>
-          </div>
+          <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="title">

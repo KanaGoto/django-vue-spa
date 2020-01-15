@@ -1,7 +1,6 @@
 import axios from "axios";
 
 import auth from "./auth";
-import questions from "./questions";
 import products from "./products";
 import reviews from "./reviews";
 import shopping from "./shopping";
@@ -13,7 +12,6 @@ const client = axios.create({
 
 /* apiを全て読み込む */
 client.auth = auth(client);
-client.questions = questions(client);
 client.products = products(client);
 client.favorites = favorites(client);
 client.reviews = reviews(client);

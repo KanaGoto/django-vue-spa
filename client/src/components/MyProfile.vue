@@ -79,13 +79,15 @@
                   <v-btn
                     text
                     color="deep-purple accent-4"
-                    @click="doEdit(userItem.id)"
+                    @click="doEdit(userItem)"
                   >
                     Edit
                   </v-btn>
                   <v-spacer></v-spacer>
                 </v-card-actions>
                 <!-- dialog -->
+                <prod-update-dialog :dialogs="prodUpdateDialogs" :newProd="prodUpdateDialogs.newProd" :oldProd="prodUpdateDialogs.oldProd">
+                </prod-update-dialog>
                 <app-dialog :dialogs="dialogs"></app-dialog>
               </v-card>
             </v-slide-item>
@@ -97,16 +99,23 @@
 </template>
 <script>
 import Dialog from "./ProdDialog.vue";
+import prodUpdateDialog from "@/components/ProdUpdateDialog.vue";
 import prodUploadDialog from "@/components/ProdUploadDialog.vue";
 export default {
   components: {
     appDialog: Dialog,
-    prodUploadDialog: prodUploadDialog
+    prodUploadDialog: prodUploadDialog,
+    prodUpdateDialog: prodUpdateDialog
   },
   data: () => ({
     prodUploadDialogs: {
       dialog: false,
       prod: []
+    },
+    prodUpdateDialogs: {
+      dialog: false,
+      oldProd: [],
+      newProd: []
     },
     offsetTop: 0,
     userProd: [],
@@ -150,8 +159,10 @@ export default {
       this.dialogs.dialog = true;
       this.dialogs.prod = prod;
     },
-    doEdit(prod_id) {
-      alert("機能実装中 (商品ID" + prod_id + ")");
+    doEdit(prod) {
+      this.prodUpdateDialogs.dialog = true;
+      this.prodUpdateDialogs.oldProd = prod;
+      this.prodUpdateDialogs.newProd = prod;
     }
   }
 };

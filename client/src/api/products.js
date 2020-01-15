@@ -7,10 +7,17 @@ export default function(cli) {
       return cli.get(`products/users/?user_id=${id}`);
     },
     findById(id) {
-      return cli.post(`products/${id}/`);
+      return cli.get(`products/retrieve/${id}/`);
     },
     create(prodInfo) {
       return cli.post("products/", prodInfo, {
+        headers: {
+          "content-type": "multipart/form-data"
+        }
+      });
+    },
+    update(id, prodInfo) {
+      return cli.put(`products/retrieve/${id}/`, prodInfo, {
         headers: {
           "content-type": "multipart/form-data"
         }

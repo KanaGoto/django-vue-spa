@@ -241,6 +241,20 @@ export default new Vuex.Store({
           });
       });
     },
+    // eslint-disable-next-line
+    updateProduct({ commit }, [id, prodInfo]) {
+      return new Promise((resolve, reject) => {
+        client.products
+          .update(id, prodInfo)
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            alert("ユーザーのプロダクト取得失敗");
+            reject(err);
+          });
+      });
+    },
     getCategory({ commit }) {
       return new Promise((resolve, reject) => {
         client.products
