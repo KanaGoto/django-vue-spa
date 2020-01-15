@@ -86,7 +86,7 @@
                   <v-spacer></v-spacer>
                 </v-card-actions>
                 <!-- dialog -->
-                <prod-update-dialog :dialogs="prodUpdateDialogs" :newProd="prodUpdateDialogs.newProd" :oldProd="prodUpdateDialogs.oldProd">
+                <prod-update-dialog :dialogs="prodUpdateDialogs">
                 </prod-update-dialog>
                 <app-dialog :dialogs="dialogs"></app-dialog>
               </v-card>
@@ -114,7 +114,6 @@ export default {
     },
     prodUpdateDialogs: {
       dialog: false,
-      oldProd: [],
       newProd: []
     },
     offsetTop: 0,
@@ -145,7 +144,8 @@ export default {
   watch: {
     // eslint-disable-next-line
     newUserProd: function(newProd, oldProd) {
-      this.userProd = newProd;
+      let arr = newProd;
+      this.userProd = arr;
     }
   },
   methods: {
@@ -161,7 +161,6 @@ export default {
     },
     doEdit(prod) {
       this.prodUpdateDialogs.dialog = true;
-      this.prodUpdateDialogs.oldProd = prod;
       this.prodUpdateDialogs.newProd = prod;
     }
   }

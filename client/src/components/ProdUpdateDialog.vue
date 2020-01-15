@@ -14,7 +14,7 @@
           <v-form ref="form" v-model="valid" :lazy-validation="lazy">
             <p>
               <v-text-field
-                v-model="newProd.name"
+                v-model="dialogs.newProd.name"
                 :counter="30"
                 :rules="nameRules"
                 label="Name"
@@ -23,7 +23,7 @@
             </p>
             <p>
               <v-select
-                v-model="newProd.category.id"
+                v-model="dialogs.newProd.category.id"
                 item-text="name"
                 item-value="id"
                 :items="categories"
@@ -34,8 +34,8 @@
             </p>
             <p>
               <img
-                v-if="newProd.image"
-                :src="newProd.image"
+                v-if="dialogs.newProd.image"
+                :src="dialogs.newProd.image"
                 width="100"
               />
               <v-file-input
@@ -48,13 +48,13 @@
             </p>
             <p>
               <v-text-field
-                v-model="newProd.market_price"
+                v-model="dialogs.newProd.market_price"
                 label="Market Price"
               ></v-text-field>
             </p>
             <p>
               <v-text-field
-                v-model="newProd.shop_price"
+                v-model="dialogs.newProd.shop_price"
                 :rules="salesPriceRules"
                 label="Sales Price"
                 required
@@ -62,14 +62,14 @@
             </p>
             <p>
               <v-text-field
-                v-model="newProd.products_num"
+                v-model="dialogs.newProd.products_num"
                 label="Stock Quantity"
                 required
               ></v-text-field>
             </p>
             <p>
               <v-textarea
-                v-model="newProd.brief"
+                v-model="dialogs.newProd.brief"
                 label="Description"
                 :counter="1000"
                 :rules="descriptionRules"
@@ -81,15 +81,11 @@
               <v-spacer></v-spacer>
               <v-spacer></v-spacer>
               <v-checkbox
-                v-model="newProd.ship_free"
+                v-model="dialogs.newProd.ship_free"
                 label="ship free"
               ></v-checkbox>
-              <v-btn
-                color="warning"
-                :disabled="!(isEdited && valid)"
-                @click="update()"
-              >
-                update
+              <v-btn color="warning" :disabled="!valid" @click="update()">
+                Update
               </v-btn>
             </div>
           </v-form>
@@ -102,16 +98,10 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-  //props: ["dialogs"],
-  props: {
-    dialogs: Object,
-    newProd: Object,
-    oldProd: Object
-  },
+  props: ["dialogs"],
   data() {
     return {
       valid: false,
-      updateImageUrl: "",
       nonFieldErrors: [],
       salesPriceRules: [v => !!v || "sales price is required"],
       passwordRules: [v => !!v || "password is required"],
@@ -132,48 +122,52 @@ export default {
   },
   created() {
     let self = this;
-    this.$store.dispatch("getCategory").then(res =>{
+    this.$store.dispatch("getCategory").then(res => {
       self.categories = res;
     });
   },
   computed: {
+    oldProd() {
+      let self = this;
+      return this.$store.getters.userProducts.filter(function(item) {
+        return item.id == self.dialogs.newProd.id;
+      })[0];
+    },
     userInfo() {
       return this.$store.getters.userInfo;
     },
     isEdited() {
-      // if (
-      //   this.oldProd.name !== this.newProd.name ||
-      //   this.oldProd.category !== this.newProd.category ||
-      //   this.oldProd.products_num !== this.newProd.products_num ||
-      //   this.oldProd.market_price !== this.newProd.market_price ||
-      //   this.oldProd.shop_price !== this.newProd.shop_price ||
-      //   this.oldProd.brief !== this.newProd.brief ||
-      //   this.oldProd.ship_free !== this.newProd.ship_free ||
-      //   this.oldProd.image !== this.newProd.image
-      // ) {
-      //   return true;
-      // }
+      if (
+        this.dialogs.newProd.image !== this.oldProd.image ||
+        this.dialogs.newProd.username !== this.oldProd.username ||
+        this.dialogs.newProd.email !== this.oldProd.email ||
+        this.dialogs.newProd.gender !== this.oldProd.gender ||
+        this.dialogs.newProd.profile !== this.oldProd.profile
+      ) {
+        return true;
+      }
       return false;
     }
   },
   methods: {
-    ...mapActions(["createProduct"]),
+    ...mapActions(["updateProduct"]),
     ...mapActions(["getUserProducts"]),
     update() {
       let self = this;
       this.resetValidation();
       this.nonFieldErrors = [];
       let data = new FormData();
-      data.append('name', this.newProd.name);
-      data.append('category', this.newProd.category);
-      data.append('products_num', this.newProd.products_num);
-      data.append('market_price', this.newProd.market_price);
-      data.append('shop_price', this.newProd.shop_price);
-      data.append('ship_free', this.newProd.ship_free);
-      data.append('brief', this.newProd.brief);
-      data.append('image', this.newProd.image);
-      data.append('seller', this.newProd.seller);
-      this.createProduct(data).then(
+      data.append("name", this.dialogs.newProd.name);
+      data.append("category", this.dialogs.newProd.category);
+      data.append("products_num", this.dialogs.newProd.products_num);
+      data.append("market_price", this.dialogs.newProd.market_price);
+      data.append("shop_price", this.dialogs.newProd.shop_price);
+      data.append("ship_free", this.dialogs.newProd.ship_free);
+      data.append("brief", this.dialogs.newProd.brief);
+      if (typeof this.dialogs.newProd.image != "string") {
+        data.append("image", this.dialogs.newProd.image);
+      }
+      this.updateProduct([this.dialogs.newProd.id, data]).then(
         /* eslint-disable */
         res => {
           self.getUserProducts(self.userInfo.user_id);
@@ -185,7 +179,6 @@ export default {
           self.clearProdInfo();
         },
         err => {
-
           self.nonFieldErrors = self.getApiError(err);
         }
       );
@@ -212,19 +205,12 @@ export default {
         reader.onerror = error => reject(error)
       })
     },
-    reSetUserData(){
-      if (this.oldProd.image == "") {
-        this.updateImageUrl = "";
-      }else{
-        this.updateImageUrl = this.oldProd.image;
-      }
-    },
     onImagePicked(file) {
         if (file !== undefined && file !== null) {
             if (file.name.lastIndexOf('.') <= 0) {
               return
             }
-            this.newProd.image = file;
+            this.dialogs.newProd.image = file;
             const fr = new FileReader()
             fr.readAsDataURL(file)
             fr.addEventListener('load', () => {
@@ -233,24 +219,6 @@ export default {
         } else {
           this.updateImageUrl = ''
         }
-    }
-  },
-  watch: {
-    dialogs: function(newDialogs) {
-      this.newProd = newDialogs.newProd;
-      this.oldProd = newDialogs.oldProd;
-      if (newDialogs.image == "") {
-        this.updateImageUrl = "";
-      }else{
-        this.updateImageUrl = newDialogs.image;
-      }
-    },
-    currentPage: function(newPageNo) {
-      let self = this;
-      this.$store.dispatch("getProducts", newPageNo).then(function(data) {
-        self.products = data.results;
-        self.totalPage = data.total_pages;
-      });
     }
   }
 };
