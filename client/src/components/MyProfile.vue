@@ -36,65 +36,63 @@
       <p class="yourProd">Your Products</p>
     </v-row>
 
-    <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="auto;">
-      <v-container class="pa-0">
-        <v-row dense>
-          <v-slide-group v-model="this.userItemList" class="pa-0">
-            <v-slide-item
-              v-for="userItem in userProd"
-              :key="userItem.id"
-              v-slot:default="{ active, toggle }"
-            >
-              <v-card class="ma-3" width="250px">
-                <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title class="title-read">{{
-                      userItem.name
-                    }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
+    <v-container class="pa-0">
+      <v-row dense>
+        <v-slide-group class="pa-0">
+          <v-slide-item
+            v-for="userItem in userProd"
+            :key="userItem.id"
+            v-slot:default="{ active, toggle }"
+          >
+            <v-card class="ma-3" width="250px">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title class="title-read">{{
+                    userItem.name
+                  }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
 
-                <v-img
-                  :src="userItem.image"
-                  class="white--text align-end"
-                  gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)"
-                  height="180px"
+              <v-img
+                :src="userItem.image"
+                class="white--text align-end"
+                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)"
+                height="180px"
+              >
+              </v-img>
+              <v-card-text>
+                <div class="box-read">
+                  {{ userItem.brief }}
+                </div>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn
+                  slot="activator"
+                  text
+                  color="red lighten-1"
+                  @click="openModal(userItem)"
                 >
-                </v-img>
-                <v-card-text>
-                  <div class="box-read">
-                    {{ userItem.brief }}
-                  </div>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-btn
-                    slot="activator"
-                    text
-                    color="red lighten-2"
-                    @click="openModal(userItem)"
-                  >
-                    Detail
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="deep-purple accent-4"
-                    @click="doEdit(userItem)"
-                  >
-                    Edit
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-                <!-- dialog -->
-                <prod-update-dialog :dialogs="prodUpdateDialogs">
-                </prod-update-dialog>
-                <app-dialog :dialogs="dialogs"></app-dialog>
-              </v-card>
-            </v-slide-item>
-          </v-slide-group>
-        </v-row>
-      </v-container>
-    </v-sheet>
+                  Detail
+                </v-btn>
+                <v-btn
+                  text
+                  color="deep-purple accent-4"
+                  @click="doEdit(userItem)"
+                >
+                  Edit
+                </v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+              <!-- dialog -->
+              <prod-update-dialog :dialogs="prodUpdateDialogs">
+              </prod-update-dialog>
+              <app-dialog :dialogs="dialogs"></app-dialog>
+            </v-card>
+          </v-slide-item>
+        </v-slide-group>
+      </v-row>
+    </v-container>
   </div>
 </template>
 <script>
@@ -217,11 +215,11 @@ h3:after {
   margin-right: 30px;
 }
 .yourProd {
-  margin-top: 145px;
+  margin-top: 160px;
   border-bottom: solid 3px #cce4ff;
   position: relative;
   width: 80%;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 .box-read {
   padding-bottom: 0px;

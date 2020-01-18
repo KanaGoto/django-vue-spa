@@ -1,5 +1,9 @@
 <template>
   <v-app>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
     <v-content transition="slide-x-transition">
       <router-view></router-view>
     </v-content>

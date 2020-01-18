@@ -170,6 +170,7 @@ export default {
       this.updateProduct([this.dialogs.newProd.id, data]).then(
         /* eslint-disable */
         res => {
+          //ユーザーに紐づく商品再取得
           self.getUserProducts(self.userInfo.user_id);
           //商品一覧取得
           self.$store.dispatch("getProducts", 1);

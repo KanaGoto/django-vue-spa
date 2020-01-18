@@ -22,12 +22,12 @@ const router = new Router({
     },
     {
       path: "/login",
-      name: "login",
+      name: "signin",
       component: Login
     },
     {
       path: "/logout",
-      name: "logout",
+      name: "signout",
       component: Logout
     },
     {

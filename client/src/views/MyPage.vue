@@ -3,18 +3,19 @@
     <v-card>
       <v-row justify="center" align="center">
         <v-toolbar
-          color="teal lighten-1
-"
+          color="teal lighten-1"
           dark
           flat
           justify="center"
           align="center"
+          height="35px"
         >
-          <v-app-bar-nav-icon
-            large
-            style="margin-left:15px"
-            @click.stop="leftDrawer = !leftDrawer"
-          ></v-app-bar-nav-icon>
+          <div style="margin-left:20px;padding-top:30px">
+            <v-app-bar-nav-icon
+              large
+              @click.stop="leftDrawer = !leftDrawer"
+            ></v-app-bar-nav-icon>
+          </div>
           <div class="logo">
             <v-img
               src="../static/organic.png"
@@ -23,14 +24,14 @@
             ></v-img>
           </div>
           <v-spacer></v-spacer>
-          <div v-if="isLoggedIn">
+          <div v-if="isLoggedIn" style="padding-top:35px">
             <v-btn text small @click="doLogout">
-              logout
+              LOGOUT
             </v-btn>
           </div>
-          <div v-else>
+          <div v-else style="padding-top:35px">
             <v-btn text small @click="doLogin">
-              login
+              Sign in
             </v-btn>
           </div>
           <div class="icon">
@@ -158,9 +159,7 @@
       </div>
       <div v-else>
         <v-list-item>
-          <v-list-item-avatar color="blue" size="100px">
-            <v-img src="../static/unknown.png"></v-img>
-          </v-list-item-avatar>
+          <v-list-item-avatar color="gray" size="100px"></v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="title">
               unknown user
@@ -241,6 +240,7 @@ export default {
   },
   data() {
     return {
+      position: 0,
       items: [
         { title: "Products", icon: "mdi-image", link: "/" },
         {
@@ -334,6 +334,7 @@ export default {
   padding:10px;
 }
 .icon{
-  margin-right:30px;
+  margin-right:40px;
+  padding-top:30px;
 }
 </style>

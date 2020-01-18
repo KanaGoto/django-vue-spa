@@ -3,14 +3,9 @@ import App from "./App";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
-//import api from "./api";
-import VueOnsen from "vue-onsenui"; // This already imports 'onsenui'
+import VueScrollTo from "vue-scrollto";
 
-Vue.use(VueOnsen);
-
-//Vue.config.productionTip = false;
-
-//Vue.use(api);
+Vue.use(VueScrollTo);
 
 new Vue({
   router,

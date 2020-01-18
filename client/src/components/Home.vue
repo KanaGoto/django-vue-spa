@@ -1,8 +1,8 @@
 <template>
-  <v-sheet id="scroll-area-2" class="overflow-y-auto" max-height="680">
-    <v-container class="pa-2" style="height: 100%;">
+  <div id="home">
+    <v-container>
       <v-row dense>
-        <v-col v-for="prod in products" :key="prod.id" :cols="4">
+        <v-col v-for="prod in dispProducts" :key="prod.id" :cols="4">
           <v-card class="ma-5">
             <v-list-item>
               <v-list-item-avatar color="grey" size="40">
@@ -31,14 +31,14 @@
               <v-btn
                 slot="activator"
                 text
-                color="red lighten-2"
+                color="red lighten-1"
                 @click="openModal(prod)"
               >
                 Detail
               </v-btn>
               <v-btn
                 text
-                color="deep-purple accent-4"
+                color="deep-purple accent-5"
                 @click="addCart(prod.id)"
               >
                 Add cart
@@ -60,26 +60,38 @@
             <app-dialog :dialogs="dialogs"></app-dialog>
           </v-card>
         </v-col>
+        <v-fab-transition>
+          <v-btn
+            color="light-green darken-1"
+            dark
+            fab
+            fixed
+            bottom
+            right
+            v-show="showFab"
+            @click="$vuetify.goTo('#app', { duration: 400, offset: 0 })"
+          >
+            <v-icon>keyboard_arrow_up</v-icon>
+          </v-btn>
+        </v-fab-transition>
       </v-row>
-      <template>
-        <div class="text-center">
-          <v-container>
-            <v-row justify="center">
-              <v-pagination
-                v-model="currentPage"
-                :length="totalPage"
-                :total-visible="5"
-              ></v-pagination>
-            </v-row>
-          </v-container>
-          <br />
-        </div>
-      </template>
+      <div class="text-center">
+        <v-row justify="center">
+          <v-pagination
+            v-model="currentPage"
+            :length="totalPage"
+            :total-visible="5"
+            :click="$vuetify.goTo('#app', { duration: 0, offset: 0 })"
+          ></v-pagination>
+        </v-row>
+        <br />
+      </div>
     </v-container>
-  </v-sheet>
+  </div>
 </template>
 <script>
 import Dialog from "./ProdDialog.vue";
+import "vue-material-design-icons/styles.css";
 import { mapActions } from "vuex";
 export default {
   components: {
@@ -90,9 +102,10 @@ export default {
       favorites: [],
       favorite_id: [],
       products: [],
+      y: window.scrollY,
       currentPage: 1,
       totalPage: 1,
-      offsetTop: 0,
+      showFab: false,
       dialogs: {
         dialog: false,
         prod: []
@@ -145,7 +158,10 @@ export default {
       return this.$store.getters.userInfo;
     },
     newProducts() {
-      return this.$store.getters.products.results;
+      return this.$store.getters.products;
+    },
+    dispProducts() {
+      return this.newProducts ? this.newProducts.results : this.products;
     },
     cartItems_id() {
       return this.$store.getters.cartItems_id;
@@ -162,7 +178,7 @@ export default {
   },
   watch: {
     newProducts: function(newProd) {
-      self.products = newProd;
+      self.products = newProd.results;
     },
     currentPage: function(newPageNo) {
       let self = this;
@@ -177,8 +193,8 @@ export default {
     ...mapActions(["setFavorites_id"]),
     ...mapActions(["getOrderList"]),
 
-    onScroll(e) {
-      this.offsetTop = e.target.scrollTop;
+    onScroll() {
+      this.showFab = window.scrollY > 0;
     },
     openModal(prod) {
       this.dialogs.dialog = true;
@@ -277,7 +293,21 @@ export default {
           }
         });
       }
+    },
+    top() {
+      // window.scrollTo({
+      //   top: 0,
+      //   left: 0,
+      //   behavior: "smooth"
+      // });
+      this.$vuetify.goTo(0);
     }
+  },
+  mounted() {
+    window.addEventListener("scroll", this.onScroll);
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.onScroll);
   }
 };
 </script>

@@ -4,29 +4,28 @@
       <div v-for="error in nonFieldErrors" :key="error">{{ error }}</div>
     </v-alert>
 
-    <h1>Login to Web App</h1>
+    <h1>Sign In to Web App</h1>
     <v-form v-model="valid">
       <p>
         <v-text-field
           v-model="username"
-          label="メールアドレス"
-          :rules="usernameRules"
+          label="e-mail"
+          :rules="emailRules"
           required
         ></v-text-field>
       </p>
       <p>
         <v-text-field
           v-model="password"
-          label="パスワード"
+          label="password"
           :append-icon-cb="() => (showPassword = !showPassword)"
           :type="showPassword ? 'text' : 'password'"
           :rules="passwordRules"
           required
         ></v-text-field>
       </p>
-      <p class="remember_me"></p>
       <p class="submit">
-        <v-btn :disabled="!valid" @click="submit">ログイン</v-btn>
+        <v-btn :disabled="!valid" @click="submit">Sign In</v-btn>
       </p>
     </v-form>
     <div class="login-help">
@@ -47,8 +46,8 @@ export default {
       password: null,
       showPassword: false,
       nonFieldErrors: [],
-      usernameRules: [v => !!v || "ログインIDを入力してください"],
-      passwordRules: [v => !!v || "パスワードを入力してください"]
+      emailRules: [v => !!v || "e-mail is required"],
+      passwordRules: [v => !!v || "password is required"]
     };
   },
   computed: {
@@ -62,6 +61,7 @@ export default {
     ...mapActions(["getUserFavorites"]),
     ...mapActions(["getCartItems"]),
     ...mapActions(["getOrderList"]),
+    ...mapActions(["getProducts"]),
 
     submit() {
       let self = this;
@@ -72,6 +72,8 @@ export default {
           if(this.isLoggedIn === true){
             //ユーザー情報取得
             this.getUserInfo().then(function(){
+            //商品一覧取得
+            self.getProducts(1);
             //お気に入り商品名リスト取得
             self.getUserFavorites(self.$store.getters.userInfo.user_id);
             //カートアイテム取得
@@ -95,7 +97,7 @@ export default {
 .login {
   position: relative;
   margin: 30px auto;
-  padding: 20px 20px 20px;
+  padding: 20px 20px;
   width: 310px;
   background: white;
   border-radius: 3px;
@@ -133,7 +135,7 @@ export default {
 }
 
 .login p {
-  margin: 20px 0 0;
+  margin-top: 20px;
 }
 
 .login p:first-child {
@@ -144,26 +146,10 @@ export default {
   width: 278px;
 }
 
-.login p.remember_me {
-  float: left;
-  line-height: 31px;
-}
-
-.login p.remember_me label {
-  font-size: 12px;
-  color: #777;
-  cursor: pointer;
-}
-
-.login p.remember_me input {
-  position: relative;
-  bottom: 1px;
-  margin-right: 4px;
-  vertical-align: middle;
-}
-
 .login p.submit {
   text-align: right;
+  color: white;
+  margin:0px 0px 15px;
 }
 
 .login-help {
@@ -171,14 +157,13 @@ export default {
   font-size: 14px;
   text-align: center;
 }
-
 .login-help a {
   color: #101111;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .login-help a:hover {
-  color: #074279;
+  color: #0f80ade7;
   text-decoration: underline;
 }
 
@@ -209,7 +194,7 @@ input[type=text], input[type=password] {
 }
 
 input[type=text]:focus, input[type=password]:focus {
-  border-color: #7dc9e2;
+  border-color: #88eccbbb;
   outline-color: #dceefc;
   outline-offset: 0;
 }
@@ -219,7 +204,7 @@ input[type=submit] {
   height: 29px;
   font-size: 12px;
   font-weight: bold;
-  color: #527881;
+  color: white;
   text-shadow: 0 1px #e3f1f1;
   background: #cde5ef;
   border: 1px solid;
@@ -238,8 +223,7 @@ input[type=submit] {
 }
 
 input[type=submit]:active {
-  background: #cde5ef;
-  border-color: #9eb9c2 #b3c0c8 #b4ccce;
+  background: #086d99;
   -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
 }
