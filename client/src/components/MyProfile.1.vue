@@ -36,69 +36,61 @@
       <p class="yourProd">Your Products</p>
     </v-row>
 
-    <v-container class="con2">
-      <v-row class="ma-2" style="width:1200px">
-        <div style="margin-top:150px">
-          <v-btn color="light-green darken-1" text left small @click="getPrevious" :disabled="previousUrl == null">
-            <v-icon>chevron_left</v-icon>
-          </v-btn>
-        </div>
-        <div
-          v-for="userItem in userProd"
-          :key="userItem.id"
-          class="ma-2"
-        >
-          <v-card class="ma-1" width="250px">
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="title-read">{{
-                  userItem.name
-                }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+    <v-container class="pa-0">
+      <v-row dense>
+        <v-slide-group class="pa-0">
+          <v-slide-item
+            v-for="userItem in userProd"
+            :key="userItem.id"
+            v-slot:default="{ active, toggle }"
+          >
+            <v-card class="ma-3" width="250px">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title class="title-read">{{
+                    userItem.name
+                  }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
 
-            <v-img
-              :src="userItem.image"
-              class="white--text align-end"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)"
-              height="180px"
-            >
-            </v-img>
-            <v-card-text>
-              <div class="box-read">
-                {{ userItem.brief }}
-              </div>
-            </v-card-text>
+              <v-img
+                :src="userItem.image"
+                class="white--text align-end"
+                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)"
+                height="180px"
+              >
+              </v-img>
+              <v-card-text>
+                <div class="box-read">
+                  {{ userItem.brief }}
+                </div>
+              </v-card-text>
 
-            <v-card-actions>
-              <v-btn
-                slot="activator"
-                text
-                color="red lighten-1"
-                @click="openModal(userItem)"
-              >
-                Detail
-              </v-btn>
-              <v-btn
-                text
-                color="deep-purple accent-4"
-                @click="doEdit(userItem)"
-              >
-                Edit
-              </v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-            <!-- dialog -->
-            <prod-update-dialog :dialogs="prodUpdateDialogs">
-            </prod-update-dialog>
-            <app-dialog :dialogs="dialogs"></app-dialog>
-          </v-card>
-        </div>
-        <div style="margin-top:150px">
-          <v-btn color="light-green darken-1" right text small @click="getNext" :disabled="nextUrl == null">
-            <v-icon>chevron_right</v-icon>
-          </v-btn>
-        </div>
+              <v-card-actions>
+                <v-btn
+                  slot="activator"
+                  text
+                  color="red lighten-1"
+                  @click="openModal(userItem)"
+                >
+                  Detail
+                </v-btn>
+                <v-btn
+                  text
+                  color="deep-purple accent-4"
+                  @click="doEdit(userItem)"
+                >
+                  Edit
+                </v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+              <!-- dialog -->
+              <prod-update-dialog :dialogs="prodUpdateDialogs">
+              </prod-update-dialog>
+              <app-dialog :dialogs="dialogs"></app-dialog>
+            </v-card>
+          </v-slide-item>
+        </v-slide-group>
       </v-row>
     </v-container>
   </div>
@@ -122,6 +114,8 @@ export default {
       dialog: false,
       newProd: []
     },
+    offsetTop: 0,
+    userProd: [],
     userItemList: [],
     dialogs: {
       dialog: false,
@@ -132,28 +126,30 @@ export default {
     if (this.$store.getters.isLoggedIn === false) {
       document.location = "/login";
     }
+    let self = this;
+    this.$store.dispatch("getUserProducts", this.userInfo.user_id).then(res => {
+      self.userProd = res;
+    });
   },
   computed: {
     userInfo() {
       return this.$store.getters.userInfo;
     },
-    userProd() {
-      return this.$store.getters.userProducts.results;
-    },
-    nextUrl() {
-      return this.$store.getters.userProducts.next;
-    },
-    previousUrl() {
-      return this.$store.getters.userProducts.previous;
-    },
-    currentPage() {
-      return this.$store.getters.userProducts.current;
-    },
     newUserProd() {
-      return this.$store.getters.userProducts.results;
+      return this.$store.getters.userProducts;
+    }
+  },
+  watch: {
+    // eslint-disable-next-line
+    newUserProd: function(newProd, oldProd) {
+      let arr = newProd;
+      this.userProd = arr;
     }
   },
   methods: {
+    onScroll(e) {
+      this.offsetTop = e.target.scrollTop;
+    },
     openProdUploadModal() {
       this.prodUploadDialogs.dialog = true;
     },
@@ -164,18 +160,6 @@ export default {
     doEdit(prod) {
       this.prodUpdateDialogs.dialog = true;
       this.prodUpdateDialogs.newProd = prod;
-    },
-    getPrevious() {
-      this.$store.dispatch("getUserProducts", [
-        this.currentPage - 1,
-        this.userInfo.user_id
-      ]);
-    },
-    getNext() {
-      this.$store.dispatch("getUserProducts", [
-        this.currentPage + 1,
-        this.userInfo.user_id
-      ]);
     }
   }
 };
@@ -257,9 +241,5 @@ h3:after {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-.con2 {
-  padding: 0px;
-  margin: 0px 80px 10px;
 }
 </style>

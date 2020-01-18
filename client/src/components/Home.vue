@@ -5,7 +5,7 @@
         <v-col v-for="prod in dispProducts" :key="prod.id" :cols="4">
           <v-card class="ma-5">
             <v-list-item>
-              <v-list-item-avatar color="grey" size="40">
+              <v-list-item-avatar color="grey" size="48">
                 <v-img :src="prod.seller.image"></v-img>
               </v-list-item-avatar>
               <v-list-item-content>

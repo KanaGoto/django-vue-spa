@@ -43,7 +43,7 @@ class ProductsListCreateView(generics.ListCreateAPIView):
 
 class UserProductsListView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
-    #pagination_class = CustomUserProdPageNumber　無しとする
+    pagination_class = CustomUserProdPageNumber
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
 

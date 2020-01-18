@@ -226,10 +226,10 @@ export default new Vuex.Store({
           });
       });
     },
-    getUserProducts({ commit }, user_id) {
+    getUserProducts({ commit }, [pageNo, user_id]) {
       return new Promise((resolve, reject) => {
         client.products
-          .findByUser(user_id)
+          .findByUser(pageNo, user_id)
           .then(res => {
             commit("setUserProducts", res.data);
             resolve(res.data);

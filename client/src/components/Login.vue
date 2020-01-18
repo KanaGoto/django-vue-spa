@@ -62,6 +62,7 @@ export default {
     ...mapActions(["getCartItems"]),
     ...mapActions(["getOrderList"]),
     ...mapActions(["getProducts"]),
+    ...mapActions(["getUserProducts"]),
 
     submit() {
       let self = this;
@@ -80,6 +81,8 @@ export default {
             self.getCartItems(self.$store.getters.userInfo.user_id);
             //購入履歴取得
             self.getOrderList(self.$store.getters.userInfo.user_id);
+            //ユーザー商品取得
+            self.getUserProducts([1,self.$store.getters.userInfo.user_id]);
             self.$router.push("/");
             })
           }

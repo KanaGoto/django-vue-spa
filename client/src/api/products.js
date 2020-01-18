@@ -3,8 +3,8 @@ export default function(cli) {
     findAll(pageNo) {
       return cli.get(`products/?page=` + pageNo);
     },
-    findByUser(id) {
-      return cli.get(`products/users/?user_id=${id}`);
+    findByUser(pageNo, userId) {
+      return cli.get(`products/users/?user_id=${userId}&page=${pageNo}`);
     },
     findById(id) {
       return cli.get(`products/retrieve/${id}/`);

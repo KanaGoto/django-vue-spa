@@ -2,7 +2,9 @@
   <v-dialog v-model="dialogs.dialog" width="500">
     <v-card class="ma-3;pa-5">
       <v-list-item>
-        <v-list-item-avatar color="grey"></v-list-item-avatar>
+        <v-list-item-avatar color="grey" size="62">
+          <v-img :src="dialogs.prod.seller.image" />
+        </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="headline">
             {{ dialogs.prod.name }}</v-list-item-title
