@@ -121,7 +121,7 @@ export default {
         self.products = data.results;
         self.totalPage = data.total_pages;
         if (self.isLoggedIn) {
-          self.getOrderList(self.userInfo.user_id);
+          self.getOrderList([self.userInfo.user_id, 1]);
         }
       })
       .catch(function(err) {
@@ -192,7 +192,6 @@ export default {
     ...mapActions(["setCartItems_id"]),
     ...mapActions(["setFavorites_id"]),
     ...mapActions(["getOrderList"]),
-
     onScroll() {
       this.showFab = window.scrollY > 0;
     },
@@ -223,6 +222,7 @@ export default {
               self.setCartItems_id(arr);
             });
         });
+        alert("カートに商品を追加しました！");
       } else {
         //既に追加されている場合は個数を更新
         this.newCartItems.forEach(item => {
@@ -230,27 +230,28 @@ export default {
             if (item.amount == 10) {
               alert("一度に購入できる同一商品は、１０個までです。");
               return null;
-            }
-            data.append("amount", (item.amount += 1));
-            self.$store
-              .dispatch("updateCartItems", [item.id, data])
-              .then(function() {
-                self.$store
-                  .dispatch("getCartItems", self.userInfo.user_id)
-                  .then(function(data) {
-                    //idだけのリスト作成
-                    self.setCartItems_id([]);
-                    let arr = [];
-                    data.forEach(item => {
-                      arr.push(item.item.id);
+            } else {
+              data.append("amount", (item.amount += 1));
+              self.$store
+                .dispatch("updateCartItems", [item.id, data])
+                .then(function() {
+                  self.$store
+                    .dispatch("getCartItems", self.userInfo.user_id)
+                    .then(function(data) {
+                      //idだけのリスト作成
+                      self.setCartItems_id([]);
+                      let arr = [];
+                      data.forEach(item => {
+                        arr.push(item.item.id);
+                      });
+                      self.setCartItems_id(arr);
                     });
-                    self.setCartItems_id(arr);
-                  });
-              });
+                });
+              alert("カートに商品を追加しました！");
+            }
           }
         });
       }
-      alert("カートに商品を追加しました！");
     },
     changeFavorite(prod_id) {
       if (!this.isLoggedIn) {

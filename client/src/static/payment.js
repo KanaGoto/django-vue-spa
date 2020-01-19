@@ -1,1 +1,1 @@
-export default ["代引き", "PayPay", "LinePay", "VISA"];
+export default ["Cash", "PayPay", "LinePay", "VISA"];

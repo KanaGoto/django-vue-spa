@@ -96,7 +96,7 @@ export default {
   methods: {
     addCart(prod_id) {
       //TODO
-      alert("機能未実装 (商品ID:" + prod_id + ")");
+      alert("機能実装中 (商品ID:" + prod_id + ")");
       return "";
       // if (!this.isLoggedIn) {
       //   return "";
@@ -153,7 +153,7 @@ export default {
     },
     changeFavorite(prod_id) {
       //TODO
-      alert("機能未実装 (商品ID:" + prod_id + ")");
+      alert("機能実装中 (商品ID:" + prod_id + ")");
       return "";
       // if (!this.isLoggedIn) {
       //   return "";

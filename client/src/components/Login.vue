@@ -80,7 +80,7 @@ export default {
             //カートアイテム取得
             self.getCartItems(self.$store.getters.userInfo.user_id);
             //購入履歴取得
-            self.getOrderList(self.$store.getters.userInfo.user_id);
+            self.getOrderList([self.$store.getters.userInfo.user_id, 1]);
             //ユーザー商品取得
             self.getUserProducts([1,self.$store.getters.userInfo.user_id]);
             self.$router.push("/");

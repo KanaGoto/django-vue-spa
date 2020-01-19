@@ -145,7 +145,7 @@
       <div v-if="isLoggedIn">
         <v-list-item>
           <v-list-item-avatar color="grey" size="100px">
-            <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
+            <v-img :src="imgBaseURL + userInfo.image"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="title">
@@ -231,6 +231,7 @@
 import MyProfile from "@/components/MyProfile.vue";
 //import Favorites from "@/components/Following.vue";
 import Home from "@/components/Home.vue";
+import config from "@/api/config.js";
 import { mapActions } from "vuex";
 export default {
   name: "Mypage",
@@ -240,6 +241,7 @@ export default {
   },
   data() {
     return {
+      imgBaseURL: config.imgBaseURL,
       position: 0,
       items: [
         { title: "Products", icon: "mdi-image", link: "/" },
@@ -325,6 +327,7 @@ export default {
 <style scoped>
 .purchase {
   text-align: center;
+  margin-bottom: 20px;
 }
 .cross{
   margin: 5px

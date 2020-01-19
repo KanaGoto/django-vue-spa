@@ -112,12 +112,12 @@
       <br />
       <div class="item">Payment</div>
       <v-radio-group v-model="orderInfo.payment" :option="dateList" row>
-        <v-radio label="代引き" value="0"></v-radio>
+        <v-radio label="Cash" value="0"></v-radio>
         <v-radio label="PayPay" value="1"></v-radio>
         <v-radio label="LinePay" value="2"></v-radio>
         <v-radio label="VISA" value="3"></v-radio>
       </v-radio-group>
-      <div class="item">Delivery Date</div>
+      <div class="item">Delivery</div>
 
       <div class="delivery">
         <v-select
@@ -179,10 +179,10 @@ export default {
       lazy: false,
       newAddress: false,
       addressList: [],
-      dateList: ["最短"],
+      dateList: ["Earliest Date"],
       timeList: [
-        { value: "0", label: "最短" },
-        { value: "1", label: "午前中" },
+        { value: "0", label: "Earliest Time" },
+        { value: "1", label: "Morning" },
         { value: "2", label: "12:00 ~ 14:00" },
         { value: "3", label: "14:00 ~ 17:00" },
         { value: "4", label: "17:00 ~ 19:00" }
@@ -191,7 +191,7 @@ export default {
         total_price: null,
         address: null,
         payment: "0",
-        delivery_date: "最短",
+        delivery_date: "Earliest Date",
         delivery_time: "0",
         order_detail: []
       },
@@ -345,8 +345,8 @@ export default {
                 })
                 .then(function() {
                   self.getCartItems(self.userInfo.user_id).then(function() {
-                    alert("商品購入完了しました!");
-                    self.$router.push("/");
+                    self.getOrderList([self.userInfo.user_id, 1]);
+                    self.$router.push("/purchase/complete");
                   });
                 });
             });
@@ -358,7 +358,6 @@ export default {
           .createOrderDetailPre(self)
           // eslint-disable-next-line
           .then(function(arr) {
-            self.sleep(1);
             //注文履歴登録
             self.orderInfo.user = self.userInfo.user_id;
             self.orderInfo.total_price = Number(self.orderInfo.total_price);
@@ -376,8 +375,8 @@ export default {
           })
           .then(function() {
             self.getCartItems(self.userInfo.user_id).then(function() {
-              alert("商品購入完了しました!");
-              self.$router.push("/");
+              self.getOrderList([self.userInfo.user_id, 1]);
+              self.$router.push("/purchase/complete");
             });
           });
       }

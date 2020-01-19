@@ -79,6 +79,7 @@
 import { mapActions } from "vuex";
 import LeftNavi from "./LeftNavi.vue";
 import gender from "../static/gender.js";
+import config from "@/api/config.js";
 export default {
   components: {
     LeftNavi: LeftNavi
@@ -86,6 +87,7 @@ export default {
   name: "MyAccount",
   data() {
     return {
+      imgBaseURL: config.imgBaseURL,
       valid: false,
       nonFieldErrors: [],
       nameRules: [
@@ -187,7 +189,7 @@ export default {
           self.newUserInfo.username = res.username;
           self.newUserInfo.image = res.image;
           if (res.image != "") {
-            self.uploadImageUrl = "http://localhost:8000" + res.image;
+            self.uploadImageUrl = (self.imgBaseURL + res.image);
           }
           self.newUserInfo.email = res.email;
           self.newUserInfo.gender = res.gender;

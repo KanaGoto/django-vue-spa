@@ -7,7 +7,9 @@ import shopping from "./shopping";
 import favorites from "./favorites";
 
 const client = axios.create({
-  baseURL: "http://localhost:8000/"
+  baseURL:
+    //"http://ec2-13-230-216-155.ap-northeast-1.compute.amazonaws.com:8000/"
+    "http://localhost:8000/"
 });
 
 /* apiを全て読み込む */

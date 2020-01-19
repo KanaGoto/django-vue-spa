@@ -8,6 +8,7 @@ import MyPage from "@/views/MyPage.vue";
 import ConfirmPurchase from "@/views/ConfirmPurchase.vue";
 import History from "@/views/History.vue";
 import MyAccount from "@/views/MyAccount.vue";
+import PurchaseComp from "@/views/PurchaseComp.vue";
 
 Vue.use(Router);
 
@@ -41,6 +42,11 @@ const router = new Router({
       component: ConfirmPurchase
     },
     {
+      path: "/purchase/complete",
+      name: "confirmPurchase",
+      component: PurchaseComp
+    },
+    {
       path: "/orders",
       name: "history",
       component: History
@@ -55,7 +61,14 @@ const router = new Router({
       name: "about",
       component: () => import("./views/About.vue")
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { x: 0, y: 0 };
+    }
+  }
 });
 
 router.beforeEach((to, from, next) => {

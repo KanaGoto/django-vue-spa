@@ -42,8 +42,8 @@ class Order(models.Model):
     """
     注文履歴
     """
-    PAYMENT_CHOICES = (("0", "代引き"), ("1", "PayPay"), ("2", "LinePay"), ("3", "VISA"))
-    DELIVERYTIME_CHOICES = (("0", "最短"), ("1", "午前中"), ("2", "12:00 ~ 14:00"), ("3", "14:00 ~ 17:00"), ("4", "17:00 ~ 19:00"))
+    PAYMENT_CHOICES = (("0", "cash"), ("1", "PayPay"), ("2", "LinePay"), ("3", "VISA"))
+    DELIVERYTIME_CHOICES = (("0", "earliest date"), ("1", "morning"), ("2", "12:00 ~ 14:00"), ("3", "14:00 ~ 17:00"), ("4", "17:00 ~ 19:00"))
 
     user = models.ForeignKey(User, verbose_name="顧客", related_name="orders", on_delete=models.CASCADE)
     address = models.ForeignKey(Address, verbose_name="お届け先", related_name="orders", on_delete=models.CASCADE)

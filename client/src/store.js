@@ -370,10 +370,10 @@ export default new Vuex.Store({
           });
       });
     },
-    getOrderList({ commit }, user_id) {
+    getOrderList({ commit }, [user_id, pageNo]) {
       return new Promise((resolve, reject) => {
         client.shopping
-          .orderList(user_id)
+          .orderList(user_id, pageNo)
           .then(res => {
             commit("setOrderList", res.data);
             resolve(res.data);

@@ -1,94 +1,105 @@
 <template>
-  <v-dialog v-model="dialogs.dialog" width="550px">
+  <v-dialog v-model="dialogs.dialog" persistent width="550px">
     <v-card>
       <v-list-item class="pa-0">
         <div class="prodForm">
-          <app-navbar>Upload Your Product</app-navbar>
-          <v-alert :value="nonFieldErrors.length" type="error">
-            <div v-for="error in nonFieldErrors" :key="error">
-              <h5>
-                {{ error }}
-              </h5>
-            </div>
-          </v-alert>
-          <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-            <p>
-              <v-text-field
-                v-model="dialogs.newProd.name"
-                :counter="30"
-                :rules="nameRules"
-                label="Name"
-                required
-              ></v-text-field>
-            </p>
-            <p>
-              <v-select
-                v-model="dialogs.newProd.category.id"
-                item-text="name"
-                item-value="id"
-                :items="categories"
-                :rules="[v => !!v || 'category is required']"
-                label="category"
-                required
-              />
-            </p>
-            <p>
-              <img
-                v-if="dialogs.newProd.image"
-                :src="dialogs.newProd.image"
-                width="100"
-              />
-              <v-file-input
-                accept="image/*"
-                show-size
-                label="image"
-                prepend-icon="mdi-image"
-                @change="onImagePicked"
-              ></v-file-input>
-            </p>
-            <p>
-              <v-text-field
-                v-model="dialogs.newProd.market_price"
-                label="Market Price"
-              ></v-text-field>
-            </p>
-            <p>
-              <v-text-field
-                v-model="dialogs.newProd.shop_price"
-                :rules="salesPriceRules"
-                label="Sales Price"
-                required
-              ></v-text-field>
-            </p>
-            <p>
-              <v-text-field
-                v-model="dialogs.newProd.products_num"
-                label="Stock Quantity"
-                required
-              ></v-text-field>
-            </p>
-            <p>
-              <v-textarea
-                v-model="dialogs.newProd.brief"
-                label="Description"
-                :counter="1000"
-                :rules="descriptionRules"
-                required
-                rows="5"
-              ></v-textarea>
-            </p>
-            <div class="submit">
-              <v-spacer></v-spacer>
-              <v-spacer></v-spacer>
-              <v-checkbox
-                v-model="dialogs.newProd.ship_free"
-                label="ship free"
-              ></v-checkbox>
-              <v-btn color="warning" :disabled="!valid" @click="update()">
-                Update
-              </v-btn>
-            </div>
-          </v-form>
+          <div style="text-align:right">
+            <v-btn small color="white" class="no-shadows" @click="close">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </div>
+          <app-navbar>Edit Your Product</app-navbar>
+          <div style="padding: 10px 50px 10px;">
+            <v-alert :value="nonFieldErrors.length" type="error">
+              <div v-for="error in nonFieldErrors" :key="error">
+                <h5>
+                  {{ error }}
+                </h5>
+              </div>
+            </v-alert>
+            <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+              <p>
+                <v-text-field
+                  v-model="dialogs.newProd.name"
+                  :counter="30"
+                  :rules="nameRules"
+                  label="Name"
+                  required
+                ></v-text-field>
+              </p>
+              <p>
+                <v-select
+                  v-model="dialogs.newProd.category.id"
+                  item-text="name"
+                  item-value="id"
+                  :items="categories"
+                  :rules="[v => !!v || 'category is required']"
+                  label="category"
+                  required
+                />
+              </p>
+              <p>
+                <img
+                  v-if="
+                    updateImageUrl == '' ? dialogs.newProd.image : updateImageUrl
+                  "
+                  :src="
+                    updateImageUrl == '' ? dialogs.newProd.image : updateImageUrl
+                  "
+                  width="150"
+                />
+                <v-file-input
+                  accept="image/*"
+                  show-size
+                  label="image"
+                  prepend-icon="mdi-image"
+                  @change="onImagePicked"
+                ></v-file-input>
+              </p>
+              <p>
+                <v-text-field
+                  v-model="dialogs.newProd.market_price"
+                  label="Market Price"
+                ></v-text-field>
+              </p>
+              <p>
+                <v-text-field
+                  v-model="dialogs.newProd.shop_price"
+                  :rules="salesPriceRules"
+                  label="Sales Price"
+                  required
+                ></v-text-field>
+              </p>
+              <p>
+                <v-text-field
+                  v-model="dialogs.newProd.products_num"
+                  label="Stock Quantity"
+                  required
+                ></v-text-field>
+              </p>
+              <p>
+                <v-textarea
+                  v-model="dialogs.newProd.brief"
+                  label="Description"
+                  :counter="1000"
+                  :rules="descriptionRules"
+                  required
+                  rows="5"
+                ></v-textarea>
+              </p>
+              <div class="submit">
+                <v-spacer></v-spacer>
+                <v-spacer></v-spacer>
+                <v-checkbox
+                  v-model="dialogs.newProd.ship_free"
+                  label="ship free"
+                ></v-checkbox>
+                <v-btn color="warning" :disabled="!valid" @click="update()">
+                  Update
+                </v-btn>
+              </div>
+            </v-form>
+          </div>
         </div>
       </v-list-item>
     </v-card>
@@ -102,6 +113,7 @@ export default {
   data() {
     return {
       valid: false,
+      updateImageUrl: "",
       nonFieldErrors: [],
       salesPriceRules: [v => !!v || "sales price is required"],
       passwordRules: [v => !!v || "password is required"],
@@ -127,26 +139,8 @@ export default {
     });
   },
   computed: {
-    oldProd() {
-      let self = this;
-      return this.$store.getters.userProducts.filter(function(item) {
-        return item.id == self.dialogs.newProd.id;
-      })[0];
-    },
     userInfo() {
       return this.$store.getters.userInfo;
-    },
-    isEdited() {
-      if (
-        this.dialogs.newProd.image !== this.oldProd.image ||
-        this.dialogs.newProd.username !== this.oldProd.username ||
-        this.dialogs.newProd.email !== this.oldProd.email ||
-        this.dialogs.newProd.gender !== this.oldProd.gender ||
-        this.dialogs.newProd.profile !== this.oldProd.profile
-      ) {
-        return true;
-      }
-      return false;
     }
   },
   methods: {
@@ -171,13 +165,12 @@ export default {
         /* eslint-disable */
         res => {
           //ユーザーに紐づく商品再取得
-          self.getUserProducts(self.userInfo.user_id);
+          self.getUserProducts([1, self.userInfo.user_id]);
           //商品一覧取得
           self.$store.dispatch("getProducts", 1);
           self.dialogs.dialog = false;
           self.resetValidation();
           self.reset();
-          self.clearProdInfo();
         },
         err => {
           self.nonFieldErrors = self.getApiError(err);
@@ -220,6 +213,14 @@ export default {
         } else {
           this.updateImageUrl = ''
         }
+    },
+    close() {
+      let self = this;
+      this.getUserProducts([1, self.userInfo.user_id]).then(
+        function(){
+          self.dialogs.dialog = false;
+        }
+      )
     }
   }
 };
@@ -229,7 +230,6 @@ export default {
 .prodForm {
   position: relative;
   text-align: center;
-  padding: 20px 50px 20px;
   width: 100%;
   background: white;
   border-radius: 3px;
@@ -240,5 +240,9 @@ export default {
 
 .submit {
   text-align: right;
+}
+
+.no-shadows {
+    box-shadow: none!important;
 }
 </style>

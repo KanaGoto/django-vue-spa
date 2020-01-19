@@ -1,90 +1,97 @@
 <template>
-  <v-dialog v-model="dialogs.dialog" width="550px">
+  <v-dialog v-model="dialogs.dialog" persistent width="550px">
     <v-card>
       <v-list-item class="pa-0">
         <div class="prodForm">
+          <div style="text-align:right">
+            <v-btn small color="white" class="no-shadows" @click="close">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </div>
           <app-navbar>Upload Your Product</app-navbar>
-          <v-alert :value="nonFieldErrors.length" type="error">
-            <div v-for="error in nonFieldErrors" :key="error">
-              <h5>
-                {{ error }}
-              </h5>
-            </div>
-          </v-alert>
-          <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-            <p>
-              <v-text-field
-                v-model="prodInfo.name"
-                :counter="30"
-                :rules="nameRules"
-                label="Name"
-                required
-              ></v-text-field>
-            </p>
-            <p>
-              <v-select
-                v-model="prodInfo.category"
-                item-text="name"
-                item-value="id"
-                :items="categories"
-                :rules="[v => !!v || 'category is required']"
-                label="category"
-                required
-              />
-            </p>
-            <p>
-              <img v-if="uploadImageUrl" :src="uploadImageUrl" width="200" />
-              <v-file-input
-                accept="image/*"
-                show-size
-                label="image"
-                prepend-icon="mdi-image"
-                @change="onImagePicked"
-              ></v-file-input>
-            </p>
-            <p>
-              <v-text-field
-                v-model="prodInfo.market_price"
-                label="Market Price"
-              ></v-text-field>
-            </p>
-            <p>
-              <v-text-field
-                v-model="prodInfo.shop_price"
-                :rules="salesPriceRules"
-                label="Sales Price"
-                required
-              ></v-text-field>
-            </p>
-            <p>
-              <v-text-field
-                v-model="prodInfo.products_num"
-                label="Stock Quantity"
-                required
-              ></v-text-field>
-            </p>
-            <p>
-              <v-textarea
-                v-model="prodInfo.brief"
-                label="Description"
-                :counter="1000"
-                :rules="descriptionRules"
-                required
-                rows="5"
-              ></v-textarea>
-            </p>
-            <div class="submit">
-              <v-spacer></v-spacer>
-              <v-spacer></v-spacer>
-              <v-checkbox
-                v-model="prodInfo.ship_free"
-                label="ship free"
-              ></v-checkbox>
-              <v-btn color="warning" :disabled="!valid" @click="upload()">
-                upload
-              </v-btn>
-            </div>
-          </v-form>
+          <div style="padding: 10px 50px 10px;">
+            <v-alert :value="nonFieldErrors.length" type="error">
+              <div v-for="error in nonFieldErrors" :key="error">
+                <h5>
+                  {{ error }}
+                </h5>
+              </div>
+            </v-alert>
+            <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+              <p>
+                <v-text-field
+                  v-model="prodInfo.name"
+                  :counter="30"
+                  :rules="nameRules"
+                  label="Name"
+                  required
+                ></v-text-field>
+              </p>
+              <p>
+                <v-select
+                  v-model="prodInfo.category"
+                  item-text="name"
+                  item-value="id"
+                  :items="categories"
+                  :rules="[v => !!v || 'category is required']"
+                  label="category"
+                  required
+                />
+              </p>
+              <p>
+                <img v-if="uploadImageUrl" :src="uploadImageUrl" width="200" />
+                <v-file-input
+                  accept="image/*"
+                  show-size
+                  label="image"
+                  prepend-icon="mdi-image"
+                  @change="onImagePicked"
+                ></v-file-input>
+              </p>
+              <p>
+                <v-text-field
+                  v-model="prodInfo.market_price"
+                  label="Market Price"
+                ></v-text-field>
+              </p>
+              <p>
+                <v-text-field
+                  v-model="prodInfo.shop_price"
+                  :rules="salesPriceRules"
+                  label="Sales Price"
+                  required
+                ></v-text-field>
+              </p>
+              <p>
+                <v-text-field
+                  v-model="prodInfo.products_num"
+                  label="Stock Quantity"
+                  required
+                ></v-text-field>
+              </p>
+              <p>
+                <v-textarea
+                  v-model="prodInfo.brief"
+                  label="Description"
+                  :counter="1000"
+                  :rules="descriptionRules"
+                  required
+                  rows="5"
+                ></v-textarea>
+              </p>
+              <div class="submit">
+                <v-spacer></v-spacer>
+                <v-spacer></v-spacer>
+                <v-checkbox
+                  v-model="prodInfo.ship_free"
+                  label="ship free"
+                ></v-checkbox>
+                <v-btn color="warning" :disabled="!valid" @click="upload()">
+                  upload
+                </v-btn>
+              </div>
+            </v-form>
+          </div>
         </div>
       </v-list-item>
     </v-card>
@@ -175,30 +182,30 @@ export default {
       );
     },
     validate () {
-        if (this.$refs.form.validate()) {
-          this.snackbar = true
-        }
-      },
-      reset () {
-        this.$refs.form.reset()
-      },
-      resetValidation () {
-        this.$refs.form.resetValidation()
-      },
-      clearProdInfo(){
-        this.prodInfo.name = null;
-        this.prodInfo.category = null;
-        this.prodInfo.products_num = null;
-        this.prodInfo.market_price = null;
-        this.prodInfo.shop_price = null;
-        this.prodInfo.brief = null;
-        this.prodInfo.ship_free = false;
-        this.prodInfo.image = null;
-      },
-      getApiError(obj){
-        return Object.keys(obj).map(function (key) { return obj[key]; })
-      },
-      getBase64 (file) {
+      if (this.$refs.form.validate()) {
+        this.snackbar = true
+      }
+    },
+    reset () {
+      this.$refs.form.reset()
+    },
+    resetValidation () {
+      this.$refs.form.resetValidation()
+    },
+    clearProdInfo(){
+      this.prodInfo.name = null;
+      this.prodInfo.category = null;
+      this.prodInfo.products_num = null;
+      this.prodInfo.market_price = null;
+      this.prodInfo.shop_price = null;
+      this.prodInfo.brief = null;
+      this.prodInfo.ship_free = false;
+      this.prodInfo.image = null;
+    },
+    getApiError(obj){
+      return Object.keys(obj).map(function (key) { return obj[key]; })
+    },
+    getBase64 (file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.readAsDataURL(file)
@@ -220,6 +227,10 @@ export default {
         } else {
           this.uploadImageUrl = ''
         }
+    },
+    close() {
+      this.reset();
+      this.dialogs.dialog = false;
     }
   }
 };
@@ -229,9 +240,7 @@ export default {
 .prodForm {
   position: relative;
   text-align: center;
-  padding: 20px 50px 20px;
   width: 100%;
-  background: white;
   border-radius: 3px;
   -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5),
     0 1px 2px rgba(0, 0, 0, 0.3);
@@ -240,5 +249,9 @@ export default {
 
 .submit {
   text-align: right;
+}
+
+.no-shadows {
+    box-shadow: none!important;
 }
 </style>

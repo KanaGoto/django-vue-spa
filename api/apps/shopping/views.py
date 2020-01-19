@@ -10,13 +10,9 @@ from users.serializer import *
 from users.models import *
 from .models import *
 from .serializer import *
+from api.pagination import *
 
 # Create your views here.
-
-class OrderSetPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 100
 
 class OrdersDetailListCreate(generics.ListCreateAPIView):
      permission_classes = (permissions.AllowAny,)
@@ -35,14 +31,14 @@ class OrdersDetailListCreate(generics.ListCreateAPIView):
 
 class OrdersListCreate(generics.ListCreateAPIView):
      permission_classes = (permissions.AllowAny,)
-     queryset = Order.objects.all()
+     queryset = Order.objects.order_by('add_time')
      serializer_class = OrderSerializer
      """ページング"""
-     pagination_class = OrderSetPagination
+     pagination_class = CustomUserProdPageNumber
      """フィルター"""
-     filter_backends = (DjangoFilterBackend,)
      filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
-     ordering_fields = ['add_time']
+     ordering_fields = ['id']
+     ordering = ['id']
 
      """user_idの指定があればフィルターした結果を返す"""
      def get_queryset(self):

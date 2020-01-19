@@ -4,7 +4,7 @@
       <v-row align="end" class="bg">
         <v-col align-self="start" class="pa-0" cols="12">
           <v-avatar class="profile" color="grey" size="155" tile>
-            <v-img :src="'http://localhost:8000' + userInfo.image"></v-img>
+            <v-img :src="imgBaseURL + userInfo.image"></v-img>
           </v-avatar>
         </v-col>
 
@@ -15,8 +15,6 @@
 
           <div class="addBtn">
             <v-btn
-              :loading="loading3"
-              :disabled="loading3"
               small
               color="blue-grey"
               class="ma-1 white--text"
@@ -37,17 +35,20 @@
     </v-row>
 
     <v-container class="con2">
-      <v-row class="ma-2" style="width:1200px">
+      <v-row class="ma-2" style="width:1300px">
         <div style="margin-top:150px">
-          <v-btn color="light-green darken-1" text left small @click="getPrevious" :disabled="previousUrl == null">
+          <v-btn
+            color="light-green darken-1"
+            text
+            left
+            smallx
+            @click="getPrevious"
+            :disabled="previousUrl == null"
+          >
             <v-icon>chevron_left</v-icon>
           </v-btn>
         </div>
-        <div
-          v-for="userItem in userProd"
-          :key="userItem.id"
-          class="ma-2"
-        >
+        <div v-for="userItem in userProd" :key="userItem.id" class="ma-2">
           <v-card class="ma-1" width="250px">
             <v-list-item>
               <v-list-item-content>
@@ -95,7 +96,14 @@
           </v-card>
         </div>
         <div style="margin-top:150px">
-          <v-btn color="light-green darken-1" right text small @click="getNext" :disabled="nextUrl == null">
+          <v-btn
+            color="light-green darken-1"
+            right
+            text
+            small
+            @click="getNext"
+            :disabled="nextUrl == null"
+          >
             <v-icon>chevron_right</v-icon>
           </v-btn>
         </div>
@@ -107,6 +115,7 @@
 import Dialog from "./ProdDialog.vue";
 import prodUpdateDialog from "@/components/ProdUpdateDialog.vue";
 import prodUploadDialog from "@/components/ProdUploadDialog.vue";
+import config from "@/api/config.js";
 export default {
   components: {
     appDialog: Dialog,
@@ -114,6 +123,7 @@ export default {
     prodUpdateDialog: prodUpdateDialog
   },
   data: () => ({
+    imgBaseURL: config.imgBaseURL,
     prodUploadDialogs: {
       dialog: false,
       prod: []
@@ -260,6 +270,6 @@ h3:after {
 }
 .con2 {
   padding: 0px;
-  margin: 0px 80px 10px;
+  margin: 0px 80px 0px;
 }
 </style>
